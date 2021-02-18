@@ -4,10 +4,7 @@ import Game from './core/Game';
 new Game('#app', {
   width: 800,
   height: 600,
-  cellSize: 80,
-  grid: {
-    x: 30,
-    y: 30,
-    offset: 1
-  }
+  cellSize: { x: 140, y: 100 },
+  grid: { x: 15, y: 15 },
+  log: true
 })

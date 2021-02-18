@@ -34,10 +34,11 @@ class Scroller {
   }
 
   handleMouseDown(event: MouseEvent): void {
-    const { viewOffset } = this.game;
+    const { viewOffset, convertPosition } = this.game;
+    const offsetPxPosition = convertPosition(viewOffset, true);
 
     this.isDragging = true;
-    this.startPos = new Vector(event.offsetX - viewOffset.x, event.offsetY - viewOffset.y)
+    this.startPos = new Vector(event.offsetX - offsetPxPosition.x, event.offsetY - offsetPxPosition.y);
   }
 
   handleMouseUp(): void {
