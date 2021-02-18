@@ -2,8 +2,7 @@ import Vector from '../components/Vector';
 import { INITIAL_DRAWER_OPTIONS } from '../const';
 import Game from './Game';
 
-const CELL_WIDTH_COEF = 0.15;
-const STAGE_PADDING = 0.25;
+const STAGE_PADDING = 0.5;
 
 interface IDrawerOptions {
   cell: {
@@ -50,8 +49,8 @@ class Drawer {
     $ctx.fillRect(
       this.getDrawPosition(0), 
       this.getDrawPosition(0, 'y'), 
-      (x + 1) * cellSize.x,
-      (y + 1) * cellSize.y,
+      (x + 1.5) * cellSize.x,
+      (y + 2) * cellSize.y,
     )
     $ctx.fill();
   }
@@ -71,7 +70,7 @@ class Drawer {
     for (let xx = startX; xx < endX; xx++) {
       for (let yy = startY; yy < endY; yy++) {
         const xOffset = yy % 2 !== 0 ? 0.5 : 0; // сдвиг четных рядов для корректного отображения гексонов
-        this.drawHexon(xx + xOffset + STAGE_PADDING, yy + STAGE_PADDING + (CELL_WIDTH_COEF * 2));
+        this.drawHexon(xx + xOffset + STAGE_PADDING, yy + STAGE_PADDING * 2);
       }
     }
   }
@@ -81,17 +80,18 @@ class Drawer {
     const { cell: { width, borderColor, color } } = this.options;
 
     const centerX = x + 0.5; // центр ячейки
-    const partSize = 1 / 3; // треть ячейки
-    const sideOffset = CELL_WIDTH_COEF;
+    const partSize = 1.5 / 3; // треть ячейки
+
+    const yy = y - 0.25;
 
     const drawPolygon = () => {
       $ctx.beginPath();
-      $ctx.moveTo(this.getDrawPosition(centerX), this.getDrawPosition(y, 'y'));
-      $ctx.lineTo(this.getDrawPosition(x + 1 - sideOffset), this.getDrawPosition(y + partSize, 'y'));
-      $ctx.lineTo(this.getDrawPosition(x + 1 - sideOffset), this.getDrawPosition(y + (partSize * 2), 'y'));
-      $ctx.lineTo(this.getDrawPosition(centerX), this.getDrawPosition(y + 1, 'y'));
-      $ctx.lineTo(this.getDrawPosition(x + sideOffset), this.getDrawPosition(y + (partSize * 2), 'y'));
-      $ctx.lineTo(this.getDrawPosition(x + sideOffset), this.getDrawPosition(y + partSize, 'y'));
+      $ctx.moveTo(this.getDrawPosition(centerX), this.getDrawPosition(yy, 'y'));
+      $ctx.lineTo(this.getDrawPosition(x + 1), this.getDrawPosition(yy + partSize, 'y'));
+      $ctx.lineTo(this.getDrawPosition(x + 1), this.getDrawPosition(yy + (partSize * 2), 'y'));
+      $ctx.lineTo(this.getDrawPosition(centerX), this.getDrawPosition(yy + 1 + 0.5, 'y'));
+      $ctx.lineTo(this.getDrawPosition(x), this.getDrawPosition(yy + (partSize * 2), 'y'));
+      $ctx.lineTo(this.getDrawPosition(x), this.getDrawPosition(yy + partSize, 'y'));
       $ctx.closePath();
     }
 
@@ -103,7 +103,6 @@ class Drawer {
     // обводка
     $ctx.lineWidth = width;
     $ctx.strokeStyle = borderColor;
-    drawPolygon();
     $ctx.stroke();
   }
 
