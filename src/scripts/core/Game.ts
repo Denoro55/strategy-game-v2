@@ -1,7 +1,7 @@
-import Drawer from './Drawer';
-import Scroller from './Scroller';
-import Vector from '../components/Vector';
-import { Actor, Warrior } from '../actors'
+import { Drawer, Scroller } from 'core';
+import { Vector, Actor, Building } from 'components';
+import { Warrior } from 'actors';
+import { MainBuilding } from 'buildings';
 
 interface IGameOptions {
   width: number;
@@ -21,6 +21,7 @@ class Game {
   viewOffset: Vector = new Vector(-0.5, -1);
   stageCells: Vector; // количество видимых ячеек по x и y
   actors: Actor[] = [];
+  buildings: Building[] = [];
 
   constructor(selector: string, options: IGameOptions) {
     this.$container = document.querySelector(selector);
@@ -75,6 +76,7 @@ class Game {
     this.actors.push(new Warrior(new Vector(3, 3)))
     this.actors.push(new Warrior(new Vector(2, 1)))
     this.actors.push(new Warrior(new Vector(1, 1)))
+    this.buildings.push(new MainBuilding(new Vector(1, 3)))
   }
 
   render(): void {

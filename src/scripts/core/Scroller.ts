@@ -1,5 +1,5 @@
-import Vector from '../components/Vector';
-import Game from './Game';
+import { Vector } from 'components';
+import { Game } from 'core';
 
 interface IScrollerOptions {
   onScroll: (offset: Vector) => void

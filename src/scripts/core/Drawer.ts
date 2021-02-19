@@ -1,20 +1,29 @@
-import Vector from '../components/Vector';
+import { Vector } from 'components';
 import { INITIAL_DRAWER_OPTIONS } from '../const';
-import Game from './Game';
+import { Game } from 'core';
 
 const STAGE_PADDING = 0.5;
+
+interface IHexonOptions {
+  color: string;
+}
 
 // сдвиг четных рядов для корректного отображения гексонов
 const getEvenXOffset = (value: number) => value % 2 !== 0 ? 0.5 : 0
 
 interface IDrawerOptions {
   cell: {
-    color: string,
-    borderColor: string
-    width: number
+    color: string;
+    borderColor: string;
+    width: number;
   },
   background: {
     color: string;
+  },
+  field: {
+    activeColor: string;
+    inactiveColor: string;
+    buildingColor: string;
   }
 }
 
@@ -40,6 +49,7 @@ class Drawer {
     
     this.drawBackground();
     this.drawGrid();
+    this.drawBuildings();
     this.drawActors();
   }
 
@@ -63,6 +73,7 @@ class Drawer {
   drawGrid(): void {
     const { grid: { x, y } } = this.game.options;
     const { viewOffset, stageCells } = this.game;
+    const { cell: { color } } = this.options;
 
     const lenX = stageCells.x;
     const lenY = stageCells.y;
@@ -74,16 +85,19 @@ class Drawer {
 
     for (let xx = startX; xx < endX; xx++) {
       for (let yy = startY; yy < endY; yy++) {
-        this.drawHexon(xx + getEvenXOffset(yy), yy);
+        this.drawHexon(xx, yy, { color });
       }
     }
   }
 
-  drawHexon(x: number, y: number): void {
+  drawHexon(x: number, y: number, options: IHexonOptions): void {
     const $ctx = this.$ctx;
-    const { cell: { width, borderColor, color } } = this.options;
+    const { cell: { width, borderColor } } = this.options;
 
-    const centerX = x + 0.5; // центр ячейки
+    const eventXOffset = getEvenXOffset(y);
+    const xx = x + eventXOffset;
+
+    const centerX = xx + 0.5; // центр ячейки
     const partSize = 1.5 / 3; // треть ячейки
 
     const yy = y - 0.25;
@@ -91,16 +105,16 @@ class Drawer {
     const drawPolygon = () => {
       $ctx.beginPath();
       $ctx.moveTo(this.getDrawPosition(centerX), this.getDrawPosition(yy, 'y'));
-      $ctx.lineTo(this.getDrawPosition(x + 1), this.getDrawPosition(yy + partSize, 'y'));
-      $ctx.lineTo(this.getDrawPosition(x + 1), this.getDrawPosition(yy + (partSize * 2), 'y'));
+      $ctx.lineTo(this.getDrawPosition(xx + 1), this.getDrawPosition(yy + partSize, 'y'));
+      $ctx.lineTo(this.getDrawPosition(xx + 1), this.getDrawPosition(yy + (partSize * 2), 'y'));
       $ctx.lineTo(this.getDrawPosition(centerX), this.getDrawPosition(yy + 1 + 0.5, 'y'));
-      $ctx.lineTo(this.getDrawPosition(x), this.getDrawPosition(yy + (partSize * 2), 'y'));
-      $ctx.lineTo(this.getDrawPosition(x), this.getDrawPosition(yy + partSize, 'y'));
+      $ctx.lineTo(this.getDrawPosition(xx), this.getDrawPosition(yy + (partSize * 2), 'y'));
+      $ctx.lineTo(this.getDrawPosition(xx), this.getDrawPosition(yy + partSize, 'y'));
       $ctx.closePath();
     }
 
     // заливка
-    $ctx.fillStyle = color;
+    $ctx.fillStyle = options.color;
     drawPolygon();
     $ctx.fill();
 
@@ -111,13 +125,32 @@ class Drawer {
   }
 
   drawActors(): void {
-    const $ctx = this.$ctx;
     const { actors } = this.game;
-
-    $ctx.fillStyle = 'blue';
+    const { field: { activeColor, inactiveColor } } = this.options;
 
     actors.forEach(actor => {
+      // подсветка полей в зависимости от статуса хода
+      const color = actor.canTurn ? activeColor : inactiveColor
+      this.drawHexon(actor.pos.x, actor.pos.y, {
+        color
+      })
+
       actor.draw(this.game);
+    })
+  }
+
+  drawBuildings(): void {
+    const { buildings } = this.game;
+    const { field: { buildingColor } } = this.options;
+
+    buildings.forEach(building => {
+      building.posArray.forEach((subPos: Vector) => {
+        this.drawHexon(subPos.x, subPos.y, {
+          color: buildingColor
+        })
+      });
+
+      building.draw(this.game);
     })
   }
 

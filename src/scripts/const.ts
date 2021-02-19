@@ -5,6 +5,11 @@ export const INITIAL_DRAWER_OPTIONS = {
     width: 2
   },
   background: {
-    color: '#6c983a'
+    color: '#a8e8f5'
+  },
+  field: {
+    activeColor: '#73a742',
+    inactiveColor: 'red',
+    buildingColor: '#435246'
   }
 }

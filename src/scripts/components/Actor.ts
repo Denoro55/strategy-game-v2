@@ -1,13 +1,14 @@
-import Vector from '../components/Vector';
-import Game from '../core/Game';
+import { Vector } from 'components';
+import { Game } from 'core';
+import { IActorType } from './types';
 
-export interface IActorOptions {
-
-}
+export interface IActorOptions {}
 
 class Actor {
   pos: Vector;
   options: IActorOptions;
+  type: IActorType = 'actor';
+  canTurn = true;
 
   constructor(position: Vector, options: IActorOptions) {
     this.pos = position;

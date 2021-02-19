@@ -1,7 +1,7 @@
-import Vector from '../components/Vector';
-import Actor, { IActorOptions } from './Actor';
-import Game from '../core/Game';
-import spriteUrl from '../../assets/actors/warrior.png';
+import { Vector, Actor } from 'components';
+import { IActorOptions } from 'components/Actor';
+import { Game } from 'core';
+import spriteUrl from 'assets/actors/warrior.png';
 
 const OPTIONS = {
   size: new Vector(70, 70)
