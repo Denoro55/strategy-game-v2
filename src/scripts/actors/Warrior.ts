@@ -4,7 +4,7 @@ import Game from '../core/Game';
 import spriteUrl from '../../assets/actors/warrior.png';
 
 const OPTIONS = {
-  size: new Vector(38, 38)
+  size: new Vector(70, 70)
 }
 
 class Warrior extends Actor {
