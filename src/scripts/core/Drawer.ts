@@ -63,8 +63,7 @@ class Drawer {
     $ctx.fillStyle = color;
     // из-за сдвига гексонов прибавим 1 дополнительную ячейку для фона
     $ctx.fillRect(
-      utils.getDrawPosition(-this.stagePadding), 
-      utils.getDrawPosition(-this.stagePadding * 2, 'y'), 
+      ...utils.getDrawPosition(new Vector(-this.stagePadding, -this.stagePadding * 2)).spread(), 
       (x + 2.5) * cellSize.x,
       (y + 3) * cellSize.y,
     )
@@ -149,9 +148,9 @@ class Drawer {
 
     const drawPolygon = () => {
       $ctx.beginPath();
-      $ctx.moveTo(utils.getDrawPosition(hexon[0].x), utils.getDrawPosition(hexon[0].y, 'y'));
+      $ctx.moveTo(...utils.getDrawPosition(new Vector(hexon[0].x, hexon[0].y)).spread());
       for (let i = 1; i < hexon.length; i++) {
-        $ctx.lineTo(utils.getDrawPosition(hexon[i].x), utils.getDrawPosition(hexon[i].y, 'y'));
+        $ctx.lineTo(...utils.getDrawPosition(new Vector(hexon[i].x, hexon[i].y)).spread());
       }
       $ctx.closePath();
     }

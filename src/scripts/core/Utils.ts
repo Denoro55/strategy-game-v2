@@ -63,20 +63,21 @@ class Utils {
     return null;
   }
 
-  getDrawPosition(coord: number, axis: 'x' | 'y' = 'x'): number {
+  getDrawPosition(pos: Vector): Vector {
     const { viewOffset, options: { cellSize } } = this.game;
     const viewPxOffset: Vector = this.game.utils.convertPosition(viewOffset, true);
 
-    if (axis === 'x') return coord * cellSize.x - viewPxOffset.x;
-
-    return coord * cellSize.y - viewPxOffset.y;
+    return new Vector(
+      pos.x * cellSize.x - viewPxOffset.x,
+      pos.y * cellSize.y - viewPxOffset.y
+    )
   }
 
   getDrawVector(pos: Vector, basePos: Vector): Vector {
     const { x, y } = pos;
     const evenXOffset = getEvenXOffset(Math.floor(basePos.y)); // сдвиг четных рядов для корректного отображения гексонов
 
-    return new Vector(this.getDrawPosition(x + evenXOffset), this.getDrawPosition(y, 'y'))
+    return this.getDrawPosition(new Vector(x + evenXOffset, y))
   }
 
   getDrawCellOffset(size: Vector, cellSize: Vector): Vector {
