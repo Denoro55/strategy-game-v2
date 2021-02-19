@@ -16,12 +16,12 @@ class Warrior extends Actor {
   }
 
   draw(game: Game): void {
-    const { $ctx, drawer } = game;
+    const { $ctx, utils } = game;
     const { cellSize } = game.options;
 
-    const cellOffset: Vector = drawer.getDrawCellOffset(OPTIONS.size, cellSize)
+    const cellOffset: Vector = utils.getDrawCellOffset(OPTIONS.size, cellSize)
 
-    const pos = drawer.getDrawVector(
+    const pos = utils.getDrawVector(
       new Vector(
         (this.pos.x + 0.5 - cellOffset.x), 
         (this.pos.y + 0.5 - cellOffset.y)

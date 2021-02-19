@@ -10,6 +10,7 @@ export const INITIAL_DRAWER_OPTIONS = {
   field: {
     activeColor: '#73a742',
     inactiveColor: 'red',
-    buildingColor: '#435246'
+    buildingColor: '#435246',
+    selectedActiveColor: '#94f733'
   }
 }

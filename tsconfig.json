@@ -23,7 +23,8 @@
       "components/*": ["./scripts/components/*"],
       "core": ["./scripts/core/"],
       "actors": ["./scripts/actors/"],
-      "buildings": ["./scripts/buildings/"]
+      "buildings": ["./scripts/buildings/"],
+      "helpers": ["./scripts/helpers/"]
     },
   }
 }

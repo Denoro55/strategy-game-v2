@@ -2,7 +2,9 @@ import { Vector } from 'components';
 import { Game } from 'core';
 
 interface IScrollerOptions {
-  onScroll: (offset: Vector) => void
+  onScroll: (offset: Vector) => void;
+  onMouseMove: (offset: Vector) => void;
+  onMouseDown: (offset: Vector) => void;
 }
 
 class Scroller {
@@ -34,8 +36,11 @@ class Scroller {
   }
 
   handleMouseDown(event: MouseEvent): void {
-    const { viewOffset, convertPosition } = this.game;
+    const { viewOffset, utils: { convertPosition } } = this.game;
+    const { onMouseDown } = this.options;
     const offsetPxPosition = convertPosition(viewOffset, true);
+
+    onMouseDown(new Vector(event.offsetX, event.offsetY))
 
     this.isDragging = true;
     this.startPos = new Vector(event.offsetX + offsetPxPosition.x, event.offsetY + offsetPxPosition.y);
@@ -46,11 +51,14 @@ class Scroller {
   }
 
   handleMouseMove(event: MouseEvent): void {
-    const { onScroll } = this.options;
+    const { onScroll, onMouseMove } = this.options;
+
+    const mousePos = new Vector(event.offsetX, event.offsetY);
+
+    onMouseMove(mousePos);
 
     if (this.isDragging) {
-      const newPosition: Vector = new Vector(event.offsetX, event.offsetY);
-      onScroll(this.startPos.diff(newPosition));
+      onScroll(this.startPos.diff(mousePos));
     }
   }
 

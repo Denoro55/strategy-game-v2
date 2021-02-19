@@ -42,6 +42,7 @@ module.exports = {
       core: path.resolve(__dirname, './src/scripts/core'),
       actors: path.resolve(__dirname, './src/scripts/actors'),
       buildings: path.resolve(__dirname, './src/scripts/buildings'),
+      helpers: path.resolve(__dirname, './src/scripts/helpers'),
    }
   },
   plugins: [

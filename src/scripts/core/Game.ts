@@ -1,4 +1,4 @@
-import { Drawer, Scroller } from 'core';
+import { Drawer, Scroller, Utils, Selector } from 'core';
 import { Vector, Actor, Building } from 'components';
 import { Warrior } from 'actors';
 import { MainBuilding } from 'buildings';
@@ -9,17 +9,25 @@ interface IGameOptions {
   cellSize: Vector;
   grid: Vector,
   log: boolean;
+  stagePadding: number;
 }
 
 class Game {
   $container: HTMLDivElement | null;
   $canvas: HTMLCanvasElement;
   $ctx: CanvasRenderingContext2D;
+
   options: IGameOptions;
+
   drawer: Drawer;
   scroller: Scroller;
-  viewOffset: Vector = new Vector(-0.5, -1);
+  utils: Utils;
+  selector: Selector;
+
+  viewOffset: Vector = new Vector(-0.5, -1); // сдвиг экрана (не в px)
+  mousePos: Vector = new Vector(0, 0); // нативная позиция мышки на канвасе (в px)
   stageCells: Vector; // количество видимых ячеек по x и y
+
   actors: Actor[] = [];
   buildings: Building[] = [];
 
@@ -37,17 +45,20 @@ class Game {
 
     this.$canvas = $canvas;
     this.$ctx = $canvas.getContext('2d') as CanvasRenderingContext2D;
+
     this.drawer = new Drawer(this);
+    this.utils = new Utils(this);
+    this.selector = new Selector(this);
     this.scroller = new Scroller(this, {
-      onScroll: this.handleViewScroll.bind(this)
+      onScroll: this.handleViewScroll.bind(this),
+      onMouseMove: this.handleMouseMove.bind(this),
+      onMouseDown: this.handleMouseDown.bind(this),
     });
 
     this.stageCells = new Vector(
       Math.ceil(width / cellSize.x) + 1, 
       Math.ceil(height / cellSize.y) + 1
     )
-
-    this.convertPosition = this.convertPosition.bind(this)
 
     this.init();
   }
@@ -58,17 +69,19 @@ class Game {
   }
 
   handleViewScroll(offset: Vector): void {
-    this.viewOffset = this.convertPosition(offset);
+    this.viewOffset = this.utils.convertPosition(offset);
   }
 
-  convertPosition(vector: Vector, toPx?: boolean): Vector {
-    const { cellSize } = this.options;
+  handleMouseMove(offset: Vector): void {
+    this.mousePos = offset;
+  }
 
-    if (toPx) {
-      return new Vector(vector.x * cellSize.x, vector.y * cellSize.y)
+  handleMouseDown(mousePos: Vector): void {
+    const clickedCellPos = this.utils.getHoveredCell(mousePos);
+
+    if (clickedCellPos) {
+      this.selector.select(clickedCellPos);
     }
-
-    return new Vector(vector.x / cellSize.x, vector.y / cellSize.y)
   }
 
   initPlayer(): void {

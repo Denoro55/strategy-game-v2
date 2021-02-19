@@ -1,15 +1,11 @@
 import { Vector } from 'components';
 import { INITIAL_DRAWER_OPTIONS } from '../const';
 import { Game } from 'core';
-
-const STAGE_PADDING = 0.5;
+import { createHexon } from 'helpers';
 
 interface IHexonOptions {
   color: string;
 }
-
-// сдвиг четных рядов для корректного отображения гексонов
-const getEvenXOffset = (value: number) => value % 2 !== 0 ? 0.5 : 0
 
 interface IDrawerOptions {
   cell: {
@@ -24,6 +20,7 @@ interface IDrawerOptions {
     activeColor: string;
     inactiveColor: string;
     buildingColor: string;
+    selectedActiveColor: string;
   }
 }
 
@@ -31,7 +28,7 @@ class Drawer {
   game: Game;
   $ctx: CanvasRenderingContext2D;
   options: IDrawerOptions;
-  stagePadding: number = STAGE_PADDING
+  stagePadding: number;
 
   constructor(game: Game, options?: IDrawerOptions) {
     this.game = game;
@@ -40,6 +37,7 @@ class Drawer {
       ...INITIAL_DRAWER_OPTIONS,
       ...options
     };
+    this.stagePadding = game.options.stagePadding;
   }
 
   draw(): void {
@@ -49,23 +47,26 @@ class Drawer {
     
     this.drawBackground();
     this.drawGrid();
+    this.drawHighlightedHexons();
+    this.drawActiveHexon();
+    // this.drawHoveredHexon();
     this.drawBuildings();
     this.drawActors();
   }
 
   drawBackground(): void {
     const $ctx = this.$ctx;
-    const { options: { cellSize, grid: { x, y } } } = this.game;
+    const { options: { cellSize, grid: { x, y } }, utils } = this.game;
     const { background: { color } } = this.options;
 
     $ctx.beginPath();
     $ctx.fillStyle = color;
     // из-за сдвига гексонов прибавим 1 дополнительную ячейку для фона
     $ctx.fillRect(
-      this.getDrawPosition(-this.stagePadding), 
-      this.getDrawPosition(-this.stagePadding * 2, 'y'), 
-      (x + 1.5) * cellSize.x,
-      (y + 2) * cellSize.y,
+      utils.getDrawPosition(-this.stagePadding), 
+      utils.getDrawPosition(-this.stagePadding * 2, 'y'), 
+      (x + 2.5) * cellSize.x,
+      (y + 3) * cellSize.y,
     )
     $ctx.fill();
   }
@@ -80,8 +81,8 @@ class Drawer {
 
     const startX = Math.min(Math.max(Math.floor(viewOffset.x - 0.5), 0), x - lenX);
     const startY = Math.min(Math.max(Math.floor(viewOffset.y - 0.5), 0), y - lenY);
-    const endX = startX + lenX;
-    const endY = startY + lenY;
+    const endX = startX + (lenX + 1);
+    const endY = startY + (lenY + 1);
 
     for (let xx = startX; xx < endX; xx++) {
       for (let yy = startY; yy < endY; yy++) {
@@ -90,26 +91,68 @@ class Drawer {
     }
   }
 
+  drawHighlightedHexons(): void {
+    const { actors, buildings } = this.game;
+    const { field: { activeColor, inactiveColor, buildingColor } } = this.options;
+
+    actors.forEach(actor => {
+      // подсветка полей в зависимости от статуса хода
+      const color = actor.canTurn ? activeColor : inactiveColor
+      this.drawHexon(actor.pos.x, actor.pos.y, {
+        color
+      })
+
+      actor.draw(this.game);
+    })
+
+    buildings.forEach(building => {
+      building.posArray.forEach((subPos: Vector) => {
+        this.drawHexon(subPos.x, subPos.y, {
+          color: buildingColor
+        })
+      });
+
+      building.draw(this.game);
+    })
+  }
+
+  // drawHoveredHexon(): void {
+  //   const { field: { selectedActiveColor } } = this.options;
+  //   const hoveredPos = this.game.utils.getHoveredCell(this.game.mousePos)
+
+  //   if (hoveredPos) {
+  //     this.drawHexon(hoveredPos.x, hoveredPos.y, {
+  //       color: selectedActiveColor
+  //     })
+  //   }
+  // }
+
+  drawActiveHexon(): void {
+    const { selector } = this.game;
+    const { field: { selectedActiveColor } } = this.options;
+
+    if (selector.isSelected()) {
+      const selected = selector.getSelected();
+
+      this.drawHexon(selected.pos.x, selected.pos.y, {
+        color: selectedActiveColor
+      })
+    }
+  }
+
   drawHexon(x: number, y: number, options: IHexonOptions): void {
     const $ctx = this.$ctx;
     const { cell: { width, borderColor } } = this.options;
+    const { game: { utils } } = this;
 
-    const eventXOffset = getEvenXOffset(y);
-    const xx = x + eventXOffset;
-
-    const centerX = xx + 0.5; // центр ячейки
-    const partSize = 1.5 / 3; // треть ячейки
-
-    const yy = y - 0.25;
+    const hexon = createHexon(new Vector(x, y));
 
     const drawPolygon = () => {
       $ctx.beginPath();
-      $ctx.moveTo(this.getDrawPosition(centerX), this.getDrawPosition(yy, 'y'));
-      $ctx.lineTo(this.getDrawPosition(xx + 1), this.getDrawPosition(yy + partSize, 'y'));
-      $ctx.lineTo(this.getDrawPosition(xx + 1), this.getDrawPosition(yy + (partSize * 2), 'y'));
-      $ctx.lineTo(this.getDrawPosition(centerX), this.getDrawPosition(yy + 1 + 0.5, 'y'));
-      $ctx.lineTo(this.getDrawPosition(xx), this.getDrawPosition(yy + (partSize * 2), 'y'));
-      $ctx.lineTo(this.getDrawPosition(xx), this.getDrawPosition(yy + partSize, 'y'));
+      $ctx.moveTo(utils.getDrawPosition(hexon[0].x), utils.getDrawPosition(hexon[0].y, 'y'));
+      for (let i = 1; i < hexon.length; i++) {
+        $ctx.lineTo(utils.getDrawPosition(hexon[i].x), utils.getDrawPosition(hexon[i].y, 'y'));
+      }
       $ctx.closePath();
     }
 
@@ -126,52 +169,18 @@ class Drawer {
 
   drawActors(): void {
     const { actors } = this.game;
-    const { field: { activeColor, inactiveColor } } = this.options;
 
     actors.forEach(actor => {
-      // подсветка полей в зависимости от статуса хода
-      const color = actor.canTurn ? activeColor : inactiveColor
-      this.drawHexon(actor.pos.x, actor.pos.y, {
-        color
-      })
-
       actor.draw(this.game);
     })
   }
 
   drawBuildings(): void {
     const { buildings } = this.game;
-    const { field: { buildingColor } } = this.options;
 
     buildings.forEach(building => {
-      building.posArray.forEach((subPos: Vector) => {
-        this.drawHexon(subPos.x, subPos.y, {
-          color: buildingColor
-        })
-      });
-
       building.draw(this.game);
     })
-  }
-
-  getDrawPosition(coord: number, axis: 'x' | 'y' = 'x'): number {
-    const { viewOffset, options: { cellSize } } = this.game;
-    const viewPxOffset: Vector = this.game.convertPosition(viewOffset, true);
-
-    if (axis === 'x') return coord * cellSize.x - viewPxOffset.x;
-
-    return coord * cellSize.y - viewPxOffset.y;
-  }
-
-  getDrawVector(pos: Vector, basePos: Vector): Vector {
-    const { x, y } = pos;
-    const evenXOffset = getEvenXOffset(Math.floor(basePos.y)); // сдвиг четных рядов для корректного отображения гексонов
-
-    return new Vector(this.getDrawPosition(x + evenXOffset), this.getDrawPosition(y, 'y'))
-  }
-
-  getDrawCellOffset(size: Vector, cellSize: Vector): Vector {
-    return new Vector((size.x / cellSize.x) / 2, (size.y / cellSize.y) / 2)
   }
 }
 
