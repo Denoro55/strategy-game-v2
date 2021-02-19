@@ -4,6 +4,9 @@ import Game from './Game';
 
 const STAGE_PADDING = 0.5;
 
+// сдвиг четных рядов для корректного отображения гексонов
+const getEvenXOffset = (value: number) => value % 2 !== 0 ? 0.5 : 0
+
 interface IDrawerOptions {
   cell: {
     color: string,
@@ -19,6 +22,7 @@ class Drawer {
   game: Game;
   $ctx: CanvasRenderingContext2D;
   options: IDrawerOptions;
+  stagePadding: number = STAGE_PADDING
 
   constructor(game: Game, options?: IDrawerOptions) {
     this.game = game;
@@ -36,6 +40,7 @@ class Drawer {
     
     this.drawBackground();
     this.drawGrid();
+    this.drawActors();
   }
 
   drawBackground(): void {
@@ -47,8 +52,8 @@ class Drawer {
     $ctx.fillStyle = color;
     // из-за сдвига гексонов прибавим 1 дополнительную ячейку для фона
     $ctx.fillRect(
-      this.getDrawPosition(0), 
-      this.getDrawPosition(0, 'y'), 
+      this.getDrawPosition(-this.stagePadding), 
+      this.getDrawPosition(-this.stagePadding * 2, 'y'), 
       (x + 1.5) * cellSize.x,
       (y + 2) * cellSize.y,
     )
@@ -62,15 +67,14 @@ class Drawer {
     const lenX = stageCells.x;
     const lenY = stageCells.y;
 
-    const startX = Math.min(Math.max(Math.floor(0 - viewOffset.x), 0), x - lenX);
-    const startY = Math.min(Math.max(Math.floor(0 - viewOffset.y), 0), y - lenY);
+    const startX = Math.min(Math.max(Math.floor(viewOffset.x - 0.5), 0), x - lenX);
+    const startY = Math.min(Math.max(Math.floor(viewOffset.y - 0.5), 0), y - lenY);
     const endX = startX + lenX;
     const endY = startY + lenY;
 
     for (let xx = startX; xx < endX; xx++) {
       for (let yy = startY; yy < endY; yy++) {
-        const xOffset = yy % 2 !== 0 ? 0.5 : 0; // сдвиг четных рядов для корректного отображения гексонов
-        this.drawHexon(xx + xOffset + STAGE_PADDING, yy + STAGE_PADDING * 2);
+        this.drawHexon(xx + getEvenXOffset(yy), yy);
       }
     }
   }
@@ -106,13 +110,35 @@ class Drawer {
     $ctx.stroke();
   }
 
+  drawActors(): void {
+    const $ctx = this.$ctx;
+    const { actors } = this.game;
+
+    $ctx.fillStyle = 'blue';
+
+    actors.forEach(actor => {
+      actor.draw(this.game);
+    })
+  }
+
   getDrawPosition(coord: number, axis: 'x' | 'y' = 'x'): number {
     const { viewOffset, options: { cellSize } } = this.game;
     const viewPxOffset: Vector = this.game.convertPosition(viewOffset, true);
 
-    if (axis === 'x') return coord * cellSize.x + viewPxOffset.x;
+    if (axis === 'x') return coord * cellSize.x - viewPxOffset.x;
 
-    return coord * cellSize.y + viewPxOffset.y;
+    return coord * cellSize.y - viewPxOffset.y;
+  }
+
+  getDrawVector(pos: Vector, basePos: Vector): Vector {
+    const { x, y } = pos;
+    const evenXOffset = getEvenXOffset(Math.floor(basePos.y)); // сдвиг четных рядов для корректного отображения гексонов
+
+    return new Vector(this.getDrawPosition(x + evenXOffset), this.getDrawPosition(y, 'y'))
+  }
+
+  getDrawCellOffset(size: Vector, cellSize: Vector): Vector {
+    return new Vector((size.x / cellSize.x) / 2, (size.y / cellSize.y) / 2)
   }
 }
 

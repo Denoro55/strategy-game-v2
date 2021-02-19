@@ -1,18 +1,13 @@
 import Drawer from './Drawer';
 import Scroller from './Scroller';
 import Vector from '../components/Vector';
+import { Actor, Warrior } from '../actors'
 
 interface IGameOptions {
   width: number;
   height: number;
-  cellSize: {
-    x: number;
-    y: number;
-  };
-  grid: {
-    x: number;
-    y: number;
-  },
+  cellSize: Vector;
+  grid: Vector,
   log: boolean;
 }
 
@@ -23,8 +18,9 @@ class Game {
   options: IGameOptions;
   drawer: Drawer;
   scroller: Scroller;
-  viewOffset: Vector = new Vector(0, 0);
-  stageCells: Vector // количество видимых ячеек по x и y
+  viewOffset: Vector = new Vector(-0.5, -1);
+  stageCells: Vector; // количество видимых ячеек по x и y
+  actors: Actor[] = [];
 
   constructor(selector: string, options: IGameOptions) {
     this.$container = document.querySelector(selector);
@@ -56,6 +52,7 @@ class Game {
   }
 
   init(): void {
+    this.initPlayer();
     this.render();
   }
 
@@ -71,6 +68,13 @@ class Game {
     }
 
     return new Vector(vector.x / cellSize.x, vector.y / cellSize.y)
+  }
+
+  initPlayer(): void {
+    this.actors.push(new Warrior(new Vector(0, 0)))
+    this.actors.push(new Warrior(new Vector(3, 3)))
+    this.actors.push(new Warrior(new Vector(2, 1)))
+    this.actors.push(new Warrior(new Vector(1, 1)))
   }
 
   render(): void {

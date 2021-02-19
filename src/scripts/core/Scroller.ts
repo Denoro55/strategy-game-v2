@@ -38,7 +38,7 @@ class Scroller {
     const offsetPxPosition = convertPosition(viewOffset, true);
 
     this.isDragging = true;
-    this.startPos = new Vector(event.offsetX - offsetPxPosition.x, event.offsetY - offsetPxPosition.y);
+    this.startPos = new Vector(event.offsetX + offsetPxPosition.x, event.offsetY + offsetPxPosition.y);
   }
 
   handleMouseUp(): void {
@@ -50,7 +50,7 @@ class Scroller {
 
     if (this.isDragging) {
       const newPosition: Vector = new Vector(event.offsetX, event.offsetY);
-      onScroll(newPosition.diff(this.startPos))
+      onScroll(this.startPos.diff(newPosition));
     }
   }
 
