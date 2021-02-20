@@ -44,6 +44,7 @@ module.exports = {
       buildings: path.resolve(__dirname, './src/scripts/buildings'),
       helpers: path.resolve(__dirname, './src/scripts/helpers'),
       instances: path.resolve(__dirname, './src/scripts/instances'),
+      config: path.resolve(__dirname, './src/scripts/config'),
    }
   },
   plugins: [

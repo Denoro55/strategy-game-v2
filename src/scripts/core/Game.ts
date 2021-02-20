@@ -1,3 +1,4 @@
+import CONFIG from 'config';
 import { Drawer, Scroller, Utils, Selector, Player } from 'core';
 import { Vector } from 'components';
 import { Actor, Building } from 'instances';
@@ -5,12 +6,7 @@ import { Warrior } from 'actors';
 import { MainBuilding } from 'buildings';
 
 interface IGameOptions {
-  width: number;
-  height: number;
-  cellSize: Vector;
-  grid: Vector,
   log: boolean;
-  stagePadding: number;
 }
 
 class Game {
@@ -19,6 +15,7 @@ class Game {
   $ctx: CanvasRenderingContext2D;
 
   options: IGameOptions;
+  config: typeof CONFIG;
 
   drawer: Drawer;
   scroller: Scroller;
@@ -33,11 +30,13 @@ class Game {
   actors: Actor[] = [];
   buildings: Building[] = [];
 
-  constructor(selector: string, options: IGameOptions) {
+  constructor(selector: string, config: typeof CONFIG, options: IGameOptions) {
     this.$container = document.querySelector(selector);
+
+    this.config = config;
     this.options = options;
 
-    const { width, height, cellSize } = this.options;
+    const { width, height, cellSize } = config.stage;
 
     const $canvas = document.createElement('canvas');
     $canvas.className = 'canvas-game';

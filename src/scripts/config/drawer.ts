@@ -1,9 +1,14 @@
-export const INITIAL_DRAWER_OPTIONS = {
+export const DRAWER_CONFIG = {
   cell: {
     color: '#517330',
     borderColor: '#FFF',
     width: 2
   },
+  // cell: {
+  //   color: '#d4f565',
+  //   borderColor: '#000',
+  //   width: 2
+  // },
   background: {
     color: '#a8e8f5'
   },

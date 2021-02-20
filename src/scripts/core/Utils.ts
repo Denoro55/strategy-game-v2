@@ -12,7 +12,7 @@ class Utils {
   }
 
   convertPosition(vector: Vector, toPx?: boolean): Vector {
-    const { cellSize } = this.game.options;
+    const { cellSize } = this.game.config.stage;
 
     if (toPx) {
       return new Vector(vector.x * cellSize.x, vector.y * cellSize.y)
@@ -32,7 +32,7 @@ class Utils {
 
   // pos = нативная позиция мыши
   getHoveredCell = (pos: Vector): Vector | null => {
-    const { game: { utils, mousePos, viewOffset, options: { cellSize, grid: { x, y } } } } = this;
+    const { game: { utils, mousePos, viewOffset, config: { stage: { cellSize, grid: { x, y } } } } } = this;
 
     let isHovered = false;
     let hoveredPos: Vector = new Vector(0, 0);
@@ -73,7 +73,7 @@ class Utils {
   }
 
   getDrawPosition(pos: Vector): Vector {
-    const { viewOffset, options: { cellSize } } = this.game;
+    const { viewOffset, config: { stage: { cellSize } } } = this.game;
     const viewPxOffset: Vector = this.game.utils.convertPosition(viewOffset, true);
 
     return new Vector(

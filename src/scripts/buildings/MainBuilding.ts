@@ -4,7 +4,7 @@ import { Game } from 'core';
 import spriteUrl from 'assets/buildings/main.png';
 
 const OPTIONS = {
-  size: new Vector(180, 180)
+  size: new Vector(145, 145)
 }
 
 class MainBuilding extends Building {
@@ -29,7 +29,7 @@ class MainBuilding extends Building {
 
   draw(game: Game): void {
     const { $ctx, utils } = game;
-    const { cellSize } = game.options;
+    const { cellSize } = game.config.stage;
 
     const cellOffset: Vector = utils.getDrawCellOffset(OPTIONS.size, cellSize)
 

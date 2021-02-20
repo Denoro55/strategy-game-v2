@@ -27,7 +27,9 @@
       "buildings": ["./scripts/buildings/"],
       "helpers": ["./scripts/helpers/"],
       "instances": ["./scripts/instances/"],
-      "instances/*": ["./scripts/instances/*"]
+      "instances/*": ["./scripts/instances/*"],
+      "config": ["./scripts/config/"],
+      "config/*": ["./scripts/config/*"]
     },
   }
 }

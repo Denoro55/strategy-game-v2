@@ -5,7 +5,7 @@ import { Game } from 'core';
 import spriteUrl from 'assets/actors/warrior.png';
 
 const OPTIONS = {
-  size: new Vector(70, 70)
+  size: new Vector(60, 60)
 }
 
 class Warrior extends Actor {
@@ -31,7 +31,7 @@ class Warrior extends Actor {
 
   draw(game: Game): void {
     const { $ctx, utils } = game;
-    const { cellSize } = game.options;
+    const { cellSize } = game.config.stage;
 
     const cellOffset: Vector = utils.getDrawCellOffset(OPTIONS.size, cellSize)
 
