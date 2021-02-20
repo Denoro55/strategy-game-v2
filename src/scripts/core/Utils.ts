@@ -63,6 +63,15 @@ class Utils {
     return null;
   }
 
+  // удалить клетки вне сцены
+  // TODO: доделать границы правого верхнего и нижнего края
+  getCellsOnlyOnStage = (cells: Vector[]): Vector[] => {
+    return cells.filter(cell => {
+      if (cell.x < 0 || cell.y < 0) return false;
+      return true;
+    })
+  }
+
   getDrawPosition(pos: Vector): Vector {
     const { viewOffset, options: { cellSize } } = this.game;
     const viewPxOffset: Vector = this.game.utils.convertPosition(viewOffset, true);

@@ -1,7 +1,8 @@
-import { Vector, Actor, Building } from 'components';
+import { Vector } from 'components';
+import { Actor, Building } from 'instances';
 import { Game } from 'core';
 
-interface ISelected {
+export interface ISelected {
   pos: Vector;
   instance: Actor | Building | null
 }
@@ -18,7 +19,7 @@ class Selector {
   }
 
   select(pos: Vector): void {
-    const { game: { actors, buildings } } = this;
+    const { game: { actors } } = this;
     let instance: Actor | Building | null = null;
 
     const checkArray = (instances: Actor[] | Building[]) => {
@@ -39,8 +40,6 @@ class Selector {
       pos,
       instance
     }
-
-    console.log(this.selected);
   }
 
   isSelected(): boolean {

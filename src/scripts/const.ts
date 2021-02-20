@@ -8,9 +8,12 @@ export const INITIAL_DRAWER_OPTIONS = {
     color: '#a8e8f5'
   },
   field: {
-    activeColor: '#73a742',
-    inactiveColor: 'red',
-    buildingColor: '#435246',
-    selectedActiveColor: '#94f733'
+    color: {
+      canTurn: '#73a742',
+      cannotTurn: 'red',
+      building: '#435246',
+      activeCell: '#94f733',
+      selectedActor: '#009688'
+    }
   }
 }

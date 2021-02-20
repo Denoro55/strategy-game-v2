@@ -5,6 +5,7 @@ interface IScrollerOptions {
   onScroll: (offset: Vector) => void;
   onMouseMove: (offset: Vector) => void;
   onMouseDown: (offset: Vector) => void;
+  onKeyDown: (event: KeyboardEvent) => void;
 }
 
 class Scroller {
@@ -33,6 +34,8 @@ class Scroller {
     this.$canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
 
     this.$canvas.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+
+    document.addEventListener('keydown', this.handleKeyDown.bind(this));
   }
 
   handleMouseDown(event: MouseEvent): void {
@@ -40,7 +43,7 @@ class Scroller {
     const { onMouseDown } = this.options;
     const offsetPxPosition = convertPosition(viewOffset, true);
 
-    onMouseDown(new Vector(event.offsetX, event.offsetY))
+    onMouseDown(new Vector(event.offsetX, event.offsetY));
 
     this.isDragging = true;
     this.startPos = new Vector(event.offsetX + offsetPxPosition.x, event.offsetY + offsetPxPosition.y);
@@ -64,6 +67,12 @@ class Scroller {
 
   handleMouseLeave(): void {
     this.isDragging = false;
+  }
+
+  handleKeyDown(event: KeyboardEvent): void {
+    const { onKeyDown } = this.options;
+
+    onKeyDown(event);
   }
 }
 

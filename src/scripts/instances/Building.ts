@@ -1,6 +1,6 @@
 import { Vector } from 'components';
 import { Game } from 'core';
-import { IActorType } from './types';
+import { IInstanceType } from './types';
 
 export interface IBuildingOptions {}
 
@@ -8,11 +8,15 @@ class Building {
   pos: Vector;
   posArray: Vector[] = [];
   options: IBuildingOptions;
-  type: IActorType = 'building';
+  type: IInstanceType = 'building';
 
   constructor(position: Vector, options: IBuildingOptions) {
     this.pos = position;
     this.options = options;
+  }
+
+  getPositions(): Vector[] {
+    return this.posArray;
   }
 
   getImage(url: string): HTMLImageElement {

@@ -1,5 +1,6 @@
-import { Drawer, Scroller, Utils, Selector } from 'core';
-import { Vector, Actor, Building } from 'components';
+import { Drawer, Scroller, Utils, Selector, Player } from 'core';
+import { Vector } from 'components';
+import { Actor, Building } from 'instances';
 import { Warrior } from 'actors';
 import { MainBuilding } from 'buildings';
 
@@ -23,6 +24,7 @@ class Game {
   scroller: Scroller;
   utils: Utils;
   selector: Selector;
+  player: Player;
 
   viewOffset: Vector = new Vector(-0.5, -1); // сдвиг экрана (не в px)
   mousePos: Vector = new Vector(0, 0); // нативная позиция мышки на канвасе (в px)
@@ -49,10 +51,12 @@ class Game {
     this.drawer = new Drawer(this);
     this.utils = new Utils(this);
     this.selector = new Selector(this);
+    this.player = new Player(this);
     this.scroller = new Scroller(this, {
       onScroll: this.handleViewScroll.bind(this),
       onMouseMove: this.handleMouseMove.bind(this),
       onMouseDown: this.handleMouseDown.bind(this),
+      onKeyDown: this.handleKeyDown.bind(this)
     });
 
     this.stageCells = new Vector(
@@ -77,10 +81,21 @@ class Game {
   }
 
   handleMouseDown(mousePos: Vector): void {
+    const { selector, player } = this;
     const clickedCellPos = this.utils.getHoveredCell(mousePos);
 
     if (clickedCellPos) {
-      this.selector.select(clickedCellPos);
+      selector.select(clickedCellPos);
+
+      if (selector.selected.instance) {
+        player.handleSelect(selector.selected);
+      }
+    }
+  }
+
+  handleKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'i') {
+      console.log(this);
     }
   }
 
@@ -89,6 +104,7 @@ class Game {
     this.actors.push(new Warrior(new Vector(3, 3)))
     this.actors.push(new Warrior(new Vector(2, 1)))
     this.actors.push(new Warrior(new Vector(1, 1)))
+    this.actors.push(new Warrior(new Vector(2, 3)))
     this.buildings.push(new MainBuilding(new Vector(1, 3)))
   }
 

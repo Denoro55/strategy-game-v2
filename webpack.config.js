@@ -43,6 +43,7 @@ module.exports = {
       actors: path.resolve(__dirname, './src/scripts/actors'),
       buildings: path.resolve(__dirname, './src/scripts/buildings'),
       helpers: path.resolve(__dirname, './src/scripts/helpers'),
+      instances: path.resolve(__dirname, './src/scripts/instances'),
    }
   },
   plugins: [

@@ -1,5 +1,6 @@
-import { Vector, Actor } from 'components';
-import { IActorOptions } from 'components/Actor';
+import { Vector } from 'components';
+import { Actor } from 'instances';
+import { IActorOptions } from 'instances/Actor';
 import { Game } from 'core';
 import spriteUrl from 'assets/actors/warrior.png';
 
@@ -13,6 +14,19 @@ class Warrior extends Actor {
   constructor(pos: Vector, options: IActorOptions = {}) {
     super(pos, options);
     this.image = this.getImage(spriteUrl);
+  }
+
+  getCellsForMove(): Vector[] {
+    const { x, y } = this.pos;
+
+    return [
+      new Vector(x - 1, y),
+      new Vector(x + 1, y),
+      new Vector(x, y - 1),
+      new Vector(x, y + 1),
+      new Vector(x + 1, y - 1),
+      new Vector(x + 1, y + 1)
+    ]
   }
 
   draw(game: Game): void {

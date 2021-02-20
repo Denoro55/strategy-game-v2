@@ -1,3 +1,4 @@
+import { IActorSelectedEventOptions } from './Player';
 import { Vector } from 'components';
 import { INITIAL_DRAWER_OPTIONS } from '../const';
 import { Game } from 'core';
@@ -17,10 +18,13 @@ interface IDrawerOptions {
     color: string;
   },
   field: {
-    activeColor: string;
-    inactiveColor: string;
-    buildingColor: string;
-    selectedActiveColor: string;
+    color: {
+      canTurn: string;
+      cannotTurn: string;
+      building: string;
+      activeCell: string;
+      selectedActor: string;
+    }
   }
 }
 
@@ -48,7 +52,7 @@ class Drawer {
     this.drawBackground();
     this.drawGrid();
     this.drawHighlightedHexons();
-    this.drawActiveHexon();
+    this.drawActiveHexons();
     // this.drawHoveredHexon();
     this.drawBuildings();
     this.drawActors();
@@ -92,11 +96,11 @@ class Drawer {
 
   drawHighlightedHexons(): void {
     const { actors, buildings } = this.game;
-    const { field: { activeColor, inactiveColor, buildingColor } } = this.options;
+    const colors = this.options.field.color;
 
     actors.forEach(actor => {
       // подсветка полей в зависимости от статуса хода
-      const color = actor.canTurn ? activeColor : inactiveColor
+      const color = actor.canTurn ? colors.canTurn : colors.cannotTurn
       this.drawHexon(actor.pos.x, actor.pos.y, {
         color
       })
@@ -107,7 +111,7 @@ class Drawer {
     buildings.forEach(building => {
       building.posArray.forEach((subPos: Vector) => {
         this.drawHexon(subPos.x, subPos.y, {
-          color: buildingColor
+          color: colors.building
         })
       });
 
@@ -126,15 +130,25 @@ class Drawer {
   //   }
   // }
 
-  drawActiveHexon(): void {
-    const { selector } = this.game;
-    const { field: { selectedActiveColor } } = this.options;
+  drawActiveHexons(): void {
+    const { player } = this.game;
+    const colors = this.options.field.color;
 
-    if (selector.isSelected()) {
-      const selected = selector.getSelected();
+    // выбран активный объект
+    if (player.eventType === 'actorSelected') {
+      const eventOptions = player.eventOptions as IActorSelectedEventOptions
+      const selected = eventOptions.selected;
 
+      // позиция объекта
       this.drawHexon(selected.pos.x, selected.pos.y, {
-        color: selectedActiveColor
+        color: colors.selectedActor
+      })
+
+      // позиции доступных ходов
+      eventOptions.activeTurnCells.forEach(activeCell => {
+        this.drawHexon(activeCell.x, activeCell.y, {
+          color: colors.activeCell
+        })
       })
     }
   }

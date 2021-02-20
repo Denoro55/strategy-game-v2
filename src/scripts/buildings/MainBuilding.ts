@@ -1,4 +1,5 @@
-import { Vector, Building } from 'components';
+import { Vector } from 'components';
+import { Building } from 'instances';
 import { Game } from 'core';
 import spriteUrl from 'assets/buildings/main.png';
 
