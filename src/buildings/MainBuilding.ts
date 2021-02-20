@@ -1,7 +1,7 @@
 import { Vector } from 'components';
 import { Building } from 'instances';
 import { Game } from 'core';
-import spriteUrl from 'assets/buildings/main.png';
+import spriteUrl from 'assets/images/buildings/main.png';
 
 const OPTIONS = {
   size: new Vector(145, 145)
@@ -9,12 +9,10 @@ const OPTIONS = {
 
 class MainBuilding extends Building {
   image: HTMLImageElement;
-  posArray: Vector[] = [];
 
   constructor(position: Vector, options = {}) {
     super(position, options);
     this.image = this.getImage(spriteUrl);
-    this.setPosition();
   }
 
   setPosition(): void {

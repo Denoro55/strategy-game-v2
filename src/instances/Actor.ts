@@ -4,7 +4,7 @@ import { IInstanceType } from './types';
 
 export interface IActorOptions {}
 
-class Actor {
+abstract class Actor {
   pos: Vector;
   options: IActorOptions;
   type: IInstanceType = 'actor';
@@ -26,12 +26,9 @@ class Actor {
     return [new Vector(this.pos.x, this.pos.y)]
   }
 
-  // TODO: сделать абстрактный класс для методов ниже
-  getCellsForMove(): Vector[] {
-    return []
-  }
+  abstract getCellsForMove(): Vector[]
 
-  draw(game: Game): void {}
+  abstract draw(game: Game): void
 }
 
 export default Actor;

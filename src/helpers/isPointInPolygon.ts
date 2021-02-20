@@ -1,4 +1,4 @@
-import { Vector } from "components";
+import { Vector } from 'components';
 
 export const isPointInPolygon = (pos: Vector, polygon: Vector[]): boolean => {
   const xp: number[] = [];

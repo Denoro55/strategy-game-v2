@@ -2,7 +2,7 @@ import { Vector } from 'components';
 import { Actor } from 'instances';
 import { IActorOptions } from 'instances/Actor';
 import { Game } from 'core';
-import spriteUrl from 'assets/actors/warrior.png';
+import spriteUrl from 'assets/images/actors/warrior.png';
 
 const OPTIONS = {
   size: new Vector(60, 60)

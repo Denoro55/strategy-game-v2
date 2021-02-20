@@ -4,7 +4,7 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: './src/scripts/index.ts',
+  entry: './src/index.ts',
   output: {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
@@ -35,25 +35,16 @@ module.exports = {
     ],
   },
   resolve: {
+    modules: [path.resolve('./src'), path.resolve('./node_modules')],
     extensions: ['.tsx', '.ts', '.js'],
-    alias: {
-      assets: path.resolve(__dirname, './src/assets'),
-      components: path.resolve(__dirname, './src/scripts/components'),
-      core: path.resolve(__dirname, './src/scripts/core'),
-      actors: path.resolve(__dirname, './src/scripts/actors'),
-      buildings: path.resolve(__dirname, './src/scripts/buildings'),
-      helpers: path.resolve(__dirname, './src/scripts/helpers'),
-      instances: path.resolve(__dirname, './src/scripts/instances'),
-      config: path.resolve(__dirname, './src/scripts/config'),
-   }
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(process.env || 'development')
     }),
     new htmlWebpackPlugin({
-        title: 'Strategy Game',
-        template: './src/index.html',
+      title: 'Strategy Game',
+      template: './src/assets/index.html',
     }),
     new CleanWebpackPlugin()
   ],

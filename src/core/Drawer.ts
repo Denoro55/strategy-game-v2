@@ -46,9 +46,9 @@ class Drawer {
     $ctx.fillStyle = color;
     // из-за сдвига гексонов прибавим 1 дополнительную ячейку для фона
     $ctx.fillRect(
-      ...utils.getDrawPosition(new Vector(-this.stagePadding, -this.stagePadding * 2)).spread(), 
-      (x + 2.5) * cellSize.x,
-      (y + 3) * cellSize.y,
+      ...utils.getDrawPosition(new Vector(-this.stagePadding, -this.stagePadding * 1.75)).spread(), 
+      (x + 0.5 + this.stagePadding * 2) * cellSize.x,
+      (y + 0.25 + this.stagePadding * 3.25) * cellSize.y,
     )
     $ctx.fill();
   }
@@ -63,8 +63,8 @@ class Drawer {
 
     const startX = Math.min(Math.max(Math.floor(viewOffset.x - 0.5), 0), x - lenX);
     const startY = Math.min(Math.max(Math.floor(viewOffset.y - 0.5), 0), y - lenY);
-    const endX = startX + (lenX + 1);
-    const endY = startY + (lenY + 1);
+    const endX = startX + lenX;
+    const endY = startY + lenY;
 
     for (let xx = startX; xx < endX; xx++) {
       for (let yy = startY; yy < endY; yy++) {

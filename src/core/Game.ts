@@ -23,7 +23,7 @@ class Game {
   selector: Selector;
   player: Player;
 
-  viewOffset: Vector = new Vector(-0.5, -1); // сдвиг экрана (не в px)
+  viewOffset: Vector = new Vector(0, 0); // сдвиг экрана (не в px)
   mousePos: Vector = new Vector(0, 0); // нативная позиция мышки на канвасе (в px)
   stageCells: Vector; // количество видимых ячеек по x и y
 
@@ -55,13 +55,16 @@ class Game {
       onScroll: this.handleViewScroll.bind(this),
       onMouseMove: this.handleMouseMove.bind(this),
       onMouseDown: this.handleMouseDown.bind(this),
-      onKeyDown: this.handleKeyDown.bind(this)
+      onKeyDown: this.handleKeyDown.bind(this),
+      onMouseClick: this.handleMouseClick.bind(this)
     });
 
     this.stageCells = new Vector(
       Math.ceil(width / cellSize.x) + 1, 
       Math.ceil(height / cellSize.y) + 1
     )
+
+    this.viewOffset = new Vector(-config.stage.stagePadding, -config.stage.stagePadding * 1.75)
 
     this.init();
   }
@@ -79,7 +82,11 @@ class Game {
     this.mousePos = offset;
   }
 
-  handleMouseDown(mousePos: Vector): void {
+  handleMouseDown(): void {
+    return
+  }
+
+  handleMouseClick(mousePos: Vector): void {
     const { selector, player } = this;
     const clickedCellPos = this.utils.getHoveredCell(mousePos);
 

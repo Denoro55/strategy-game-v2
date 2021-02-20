@@ -4,7 +4,7 @@ import { IInstanceType } from './types';
 
 export interface IBuildingOptions {}
 
-class Building {
+abstract class Building {
   pos: Vector;
   posArray: Vector[] = [];
   options: IBuildingOptions;
@@ -13,6 +13,7 @@ class Building {
   constructor(position: Vector, options: IBuildingOptions) {
     this.pos = position;
     this.options = options;
+    this.setPosition();
   }
 
   getPositions(): Vector[] {
@@ -26,7 +27,9 @@ class Building {
     return image;
   }
 
-  draw(game: Game): void {}
+  abstract setPosition(): void;
+
+  abstract draw(game: Game): void;
 }
 
 export default Building;

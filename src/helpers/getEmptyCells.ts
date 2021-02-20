@@ -1,4 +1,4 @@
-import { Vector } from "components";
+import { Vector } from 'components';
 
 export const getEmptyCells = (cells: Vector[], colliders: Vector[]): Vector[] => {
   const emptyCells: Vector[] = [];

@@ -22,6 +22,7 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
-        "@typescript-eslint/no-empty-interface": "off"
+        "@typescript-eslint/no-empty-interface": "off",
+        '@typescript-eslint/no-var-requires': 0,
     }
 };
