@@ -14,8 +14,8 @@ export const DRAWER_CONFIG = {
   },
   field: {
     color: {
-      canTurn: '#73a742',
-      cannotTurn: 'red',
+      canTurn: '#85c34b',
+      cannotTurn: '#faffc4',
       building: '#435246',
       activeCell: '#94f733',
       selectedActor: '#009688',

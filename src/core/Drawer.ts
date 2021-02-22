@@ -137,10 +137,11 @@ export class Drawer {
   drawActiveHexons(): void {
     const { player } = this.game;
     const colors = this.config.field.color;
+    const event = player.event;
 
     // выбран активный объект
-    if (player.eventType === 'actorSelected') {
-      const eventOptions = player.eventOptions as IActorSelectedEventOptions;
+    if (event && event.type === 'actorSelected') {
+      const eventOptions = event.options as IActorSelectedEventOptions;
       const selected = eventOptions.selected;
 
       // позиция объекта

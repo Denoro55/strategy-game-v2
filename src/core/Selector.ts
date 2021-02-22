@@ -2,14 +2,14 @@ import { Vector } from 'components';
 import { Actor, Building } from 'instances';
 import { Game } from 'core';
 
-export interface ISelected {
+export interface ISelected<InstanceType> {
   pos: Vector;
-  instance: Actor | Building | null;
+  instance: InstanceType;
 }
 
 export class Selector {
   game: Game;
-  selected: ISelected = {
+  selected: ISelected<Actor | Building | null> = {
     pos: new Vector(0, 0),
     instance: null,
   };
@@ -48,7 +48,7 @@ export class Selector {
     return !!this.selected.instance;
   }
 
-  getSelected(): ISelected {
+  getSelected(): ISelected<Actor | Building | null> {
     return this.selected;
   }
 }

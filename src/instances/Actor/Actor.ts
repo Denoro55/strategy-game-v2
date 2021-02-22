@@ -34,8 +34,16 @@ export abstract class Actor {
     return game.config.actors[this.name];
   }
 
+  setPosition(pos: Vector): void {
+    this.pos = new Vector(pos.x, pos.y);
+  }
+
   getPositions(): Vector[] {
     return [new Vector(this.pos.x, this.pos.y)];
+  }
+
+  endTurn(): void {
+    this.canTurn = false;
   }
 
   abstract getCellsForMove(): Vector[];

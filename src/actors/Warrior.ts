@@ -3,6 +3,7 @@ import { Actor } from 'instances';
 import { IActorOptions } from 'instances/Actor/Actor';
 import { ActorNameType } from 'instances/Actor/types';
 import { Game } from 'core';
+import { getEvenXOffset } from 'helpers';
 import spriteUrl from 'assets/images/actors/warrior.png';
 
 export class Warrior extends Actor {
@@ -16,14 +17,15 @@ export class Warrior extends Actor {
 
   getCellsForMove(): Vector[] {
     const { x, y } = this.pos;
+    const hexonOffset = getEvenXOffset(this.pos.y, 1, -1);
 
     return [
       new Vector(x - 1, y),
       new Vector(x + 1, y),
       new Vector(x, y - 1),
       new Vector(x, y + 1),
-      new Vector(x + 1, y - 1),
-      new Vector(x + 1, y + 1),
+      new Vector(x + hexonOffset, y - 1),
+      new Vector(x + hexonOffset, y + 1),
     ];
   }
 

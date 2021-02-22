@@ -1,3 +1,4 @@
+import { Actor } from 'instances';
 import { Vector } from 'components';
 import { Game } from 'core';
 import { createHexon, isPointInPolygon, getEvenXOffset } from 'helpers';
