@@ -1,1 +1,1 @@
-export { default as Warrior } from './Warrior';
+export { Warrior } from './Warrior';

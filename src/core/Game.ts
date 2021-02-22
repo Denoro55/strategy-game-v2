@@ -1,15 +1,13 @@
-import CONFIG from 'config';
-import { Drawer, Scroller, Utils, Selector, Player } from 'core';
+import { CONFIG } from 'constants/config';
+import { Drawer, EventListener, Utils, Selector, Player } from 'core';
 import { Vector } from 'components';
 import { Actor, Building } from 'instances';
-import { Warrior } from 'actors';
-import { MainBuilding } from 'buildings';
 
 interface IGameOptions {
   log: boolean;
 }
 
-class Game {
+export class Game {
   $container: HTMLDivElement | null;
   $canvas: HTMLCanvasElement;
   $ctx: CanvasRenderingContext2D;
@@ -18,7 +16,7 @@ class Game {
   config: typeof CONFIG;
 
   drawer: Drawer;
-  scroller: Scroller;
+  eventListener: EventListener;
   utils: Utils;
   selector: Selector;
   player: Player;
@@ -51,26 +49,30 @@ class Game {
     this.utils = new Utils(this);
     this.selector = new Selector(this);
     this.player = new Player(this);
-    this.scroller = new Scroller(this, {
+
+    this.eventListener = new EventListener(this, {
       onScroll: this.handleViewScroll.bind(this),
       onMouseMove: this.handleMouseMove.bind(this),
       onMouseDown: this.handleMouseDown.bind(this),
       onKeyDown: this.handleKeyDown.bind(this),
-      onMouseClick: this.handleMouseClick.bind(this)
+      onMouseClick: this.handleMouseClick.bind(this),
     });
 
     this.stageCells = new Vector(
-      Math.ceil(width / cellSize.x) + 1, 
+      Math.ceil(width / cellSize.x) + 1,
       Math.ceil(height / cellSize.y) + 1
-    )
+    );
 
-    this.viewOffset = new Vector(-config.stage.stagePadding, -config.stage.stagePadding * 1.75)
+    this.viewOffset = new Vector(
+      -config.stage.stagePadding,
+      -config.stage.stagePadding * 1.75
+    );
 
     this.init();
   }
 
   init(): void {
-    this.initPlayer();
+    this.player.init();
     this.render();
   }
 
@@ -83,20 +85,13 @@ class Game {
   }
 
   handleMouseDown(): void {
-    return
+    return;
   }
 
   handleMouseClick(mousePos: Vector): void {
-    const { selector, player } = this;
-    const clickedCellPos = this.utils.getHoveredCell(mousePos);
+    const { player } = this;
 
-    if (clickedCellPos) {
-      selector.select(clickedCellPos);
-
-      if (selector.selected.instance) {
-        player.handleSelect(selector.selected);
-      }
-    }
+    player.handleClick(mousePos);
   }
 
   handleKeyDown(event: KeyboardEvent): void {
@@ -105,30 +100,19 @@ class Game {
     }
   }
 
-  initPlayer(): void {
-    this.actors.push(new Warrior(new Vector(0, 0)))
-    this.actors.push(new Warrior(new Vector(3, 3)))
-    this.actors.push(new Warrior(new Vector(2, 1)))
-    this.actors.push(new Warrior(new Vector(1, 1)))
-    this.actors.push(new Warrior(new Vector(2, 3)))
-    this.buildings.push(new MainBuilding(new Vector(1, 3)))
-  }
-
   render(): void {
     const { log } = this.options;
 
     const loop = () => {
-      const time: number = performance.now()
+      const time: number = performance.now();
 
       this.drawer.draw();
 
       log && console.log('Время выполнения: ', performance.now() - time);
 
       window.requestAnimationFrame(loop);
-    }
+    };
 
     loop();
   }
 }
-
-export default Game;

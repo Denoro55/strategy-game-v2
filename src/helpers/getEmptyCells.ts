@@ -1,9 +1,12 @@
 import { Vector } from 'components';
 
-export const getEmptyCells = (cells: Vector[], colliders: Vector[]): Vector[] => {
+export const getEmptyCells = (
+  cells: Vector[],
+  colliders: Vector[]
+): Vector[] => {
   const emptyCells: Vector[] = [];
 
-  cells.forEach(cell => {
+  cells.forEach((cell) => {
     let isEmpty = true;
 
     for (let i = 0; i < colliders.length; i++) {
@@ -15,9 +18,9 @@ export const getEmptyCells = (cells: Vector[], colliders: Vector[]): Vector[] =>
     }
 
     if (isEmpty) {
-      emptyCells.push(cell)
+      emptyCells.push(cell);
     }
-  })
+  });
 
   return emptyCells;
-}
+};

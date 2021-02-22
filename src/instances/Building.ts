@@ -4,7 +4,7 @@ import { IInstanceType } from './types';
 
 export interface IBuildingOptions {}
 
-abstract class Building {
+export abstract class Building {
   pos: Vector;
   posArray: Vector[] = [];
   options: IBuildingOptions;
@@ -31,5 +31,3 @@ abstract class Building {
 
   abstract draw(game: Game): void;
 }
-
-export default Building;

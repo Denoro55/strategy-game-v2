@@ -1,1 +1,1 @@
-export { default as MainBuilding } from './MainBuilding';
+export { MainBuilding } from './MainBuilding';

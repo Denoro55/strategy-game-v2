@@ -4,22 +4,24 @@ import { Game } from 'core';
 
 export interface ISelected {
   pos: Vector;
-  instance: Actor | Building | null
+  instance: Actor | Building | null;
 }
 
-class Selector {
+export class Selector {
   game: Game;
   selected: ISelected = {
     pos: new Vector(0, 0),
-    instance: null
-  }
+    instance: null,
+  };
 
   constructor(game: Game) {
     this.game = game;
   }
 
   select(pos: Vector): void {
-    const { game: { actors } } = this;
+    const {
+      game: { actors },
+    } = this;
     let instance: Actor | Building | null = null;
 
     const checkArray = (instances: Actor[] | Building[]) => {
@@ -31,24 +33,22 @@ class Selector {
           break;
         }
       }
-    }
+    };
 
     checkArray(actors);
     // checkArray(buildings);
 
     this.selected = {
       pos,
-      instance
-    }
+      instance,
+    };
   }
 
   isSelected(): boolean {
-    return !!this.selected.instance
+    return !!this.selected.instance;
   }
 
   getSelected(): ISelected {
     return this.selected;
   }
 }
-
-export default Selector;

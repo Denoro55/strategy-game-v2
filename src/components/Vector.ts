@@ -1,4 +1,4 @@
-class Vector {
+export class Vector {
   x: number;
   y: number;
 
@@ -8,12 +8,10 @@ class Vector {
   }
 
   diff(vector: Vector): Vector {
-    return new Vector(this.x - vector.x, this.y - vector.y)
+    return new Vector(this.x - vector.x, this.y - vector.y);
   }
 
   spread(): [x: number, y: number] {
     return [this.x, this.y];
   }
 }
-
-export default Vector;

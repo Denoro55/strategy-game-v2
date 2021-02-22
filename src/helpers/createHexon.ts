@@ -1,7 +1,14 @@
 import { getEvenXOffset } from './getEvenXOffset';
 import { Vector } from 'components';
 
-type HexonType = [pos: Vector, pos: Vector, pos: Vector, pos: Vector, pos: Vector, pos: Vector];
+type HexonType = [
+  pos: Vector,
+  pos: Vector,
+  pos: Vector,
+  pos: Vector,
+  pos: Vector,
+  pos: Vector
+];
 
 export const createHexon = (pos: Vector): HexonType => {
   const eventXOffset = getEvenXOffset(pos.y);
@@ -15,9 +22,9 @@ export const createHexon = (pos: Vector): HexonType => {
   return [
     new Vector(centerX, yy),
     new Vector(xx + 1, yy + partSize),
-    new Vector(xx + 1, yy + (partSize * 2)),
+    new Vector(xx + 1, yy + partSize * 2),
     new Vector(centerX, yy + 1 + 0.5),
-    new Vector(xx, yy + (partSize * 2)),
+    new Vector(xx, yy + partSize * 2),
     new Vector(xx, yy + partSize),
-  ]
-}
+  ];
+};

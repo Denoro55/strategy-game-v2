@@ -1,6 +1,6 @@
-export { default as Game } from './Game';
-export { default as Drawer } from './Drawer';
-export { default as Scroller } from './Scroller';
-export { default as Utils } from './Utils';
-export { default as Selector } from './Selector';
-export { default as Player } from './Player';
+export { Game } from './Game';
+export { Drawer } from './Drawer';
+export { Utils } from './Utils';
+export { Selector } from './Selector';
+export { Player } from './Player';
+export { EventListener } from './EventListener';

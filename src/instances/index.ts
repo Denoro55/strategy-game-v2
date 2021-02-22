@@ -1,2 +1,2 @@
-export { default as Actor } from './Actor';
-export { default as Building } from './Building';
+export { Actor } from './Actor';
+export { Building } from './Building';

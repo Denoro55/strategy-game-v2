@@ -9,7 +9,7 @@ interface IScrollerOptions {
   onMouseClick: (event: Vector) => void;
 }
 
-class Scroller {
+export class EventListener {
   game: Game;
   $canvas: HTMLCanvasElement;
   isDragging: boolean;
@@ -21,7 +21,7 @@ class Scroller {
     this.$canvas = game.$canvas;
     this.options = options;
 
-    this.startPos = new Vector(0, 0)
+    this.startPos = new Vector(0, 0);
     this.isDragging = false;
 
     this.initListeners();
@@ -34,7 +34,10 @@ class Scroller {
 
     this.$canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
 
-    this.$canvas.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+    this.$canvas.addEventListener(
+      'mouseleave',
+      this.handleMouseLeave.bind(this)
+    );
 
     this.$canvas.addEventListener('click', this.handleMouseClick.bind(this));
 
@@ -42,20 +45,26 @@ class Scroller {
   }
 
   handleMouseDown(event: MouseEvent): void {
-    const { viewOffset, utils: { convertPosition } } = this.game;
+    const {
+      viewOffset,
+      utils: { convertPosition },
+    } = this.game;
     const { onMouseDown } = this.options;
     const offsetPxPosition = convertPosition(viewOffset, true);
 
     onMouseDown(new Vector(event.offsetX, event.offsetY));
 
     this.isDragging = true;
-    this.startPos = new Vector(event.offsetX + offsetPxPosition.x, event.offsetY + offsetPxPosition.y);
+    this.startPos = new Vector(
+      event.offsetX + offsetPxPosition.x,
+      event.offsetY + offsetPxPosition.y
+    );
   }
 
   handleMouseClick(event: MouseEvent): void {
     const { onMouseClick } = this.options;
 
-    onMouseClick(new Vector(event.offsetX, event.offsetY))
+    onMouseClick(new Vector(event.offsetX, event.offsetY));
   }
 
   handleMouseUp(): void {
@@ -84,5 +93,3 @@ class Scroller {
     onKeyDown(event);
   }
 }
-
-export default Scroller;

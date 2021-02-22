@@ -6,4 +6,4 @@ export const STAGE_CONFIG = {
   cellSize: new Vector(95, 65),
   grid: new Vector(15, 15),
   stagePadding: 1.5,
-}
+};
