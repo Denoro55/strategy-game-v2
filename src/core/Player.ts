@@ -1,5 +1,5 @@
 import { Vector } from 'components';
-import { Warrior } from 'actors';
+import { Warrior, Spearman } from 'actors';
 import { MainBuilding } from 'buildings';
 import { Actor } from 'instances';
 import { Game } from 'core';
@@ -29,9 +29,12 @@ export class Player {
 
     actors.push(new Warrior(this.game, new Vector(0, 0)));
     actors.push(new Warrior(this.game, new Vector(3, 3)));
-    actors.push(new Warrior(this.game, new Vector(2, 1)));
+    actors.push(new Spearman(this.game, new Vector(2, 1)));
     actors.push(new Warrior(this.game, new Vector(1, 1)));
     actors.push(new Warrior(this.game, new Vector(2, 3)));
+    actors.push(new Spearman(this.game, new Vector(5, 2)));
+    actors.push(new Spearman(this.game, new Vector(6, 4)));
+
     buildings.push(new MainBuilding(new Vector(1, 3)));
   }
 
@@ -81,7 +84,8 @@ export class Player {
         },
         []
       );
-      const activeTurnCells = getEmptyCells(turnCells, collides);
+
+      const activeTurnCells = instance.validateCellsForMove(getEmptyCells(turnCells, collides));
 
       this.event = {
         type: 'actorSelected',
@@ -103,7 +107,7 @@ export class Player {
         const selectedInstance = options.selected.instance;
         this.resetEvent();
         selectedInstance.setPosition(clickedCellPos);
-        selectedInstance.endTurn();
+        // selectedInstance.endTurn();
       }
     }
   }

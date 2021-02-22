@@ -19,6 +19,7 @@ export const DRAWER_CONFIG = {
       building: '#435246',
       activeCell: '#94f733',
       selectedActor: '#009688',
+      hover: '#59ad2a',
     },
   },
 };

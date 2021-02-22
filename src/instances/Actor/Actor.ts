@@ -48,5 +48,7 @@ export abstract class Actor {
 
   abstract getCellsForMove(): Vector[];
 
+  abstract validateCellsForMove(cells: Vector[]): Vector[];
+
   abstract draw(game: Game): void;
 }

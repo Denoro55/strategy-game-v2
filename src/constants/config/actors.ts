@@ -9,4 +9,7 @@ export const ACTORS_CONFIG: IActorsConfig = {
   warrior: {
     size: new Vector(60, 60),
   },
+  spearman: {
+    size: new Vector(60, 60),
+  },
 };

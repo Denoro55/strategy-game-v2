@@ -1,1 +1,1 @@
-export type ActorNameType = 'warrior';
+export type ActorNameType = 'warrior' | 'spearman';

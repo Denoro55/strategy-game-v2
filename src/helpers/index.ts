@@ -3,3 +3,4 @@ export { createHexon } from './createHexon';
 export { isPointInPolygon } from './isPointInPolygon';
 export { getEmptyCells } from './getEmptyCells';
 export { isPointInCells } from './isPointInCells';
+export { getValidatedCells } from './getValidatedCells';

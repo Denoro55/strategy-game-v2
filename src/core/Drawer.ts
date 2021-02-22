@@ -2,7 +2,7 @@ import { CONFIG } from 'constants/config';
 import { IActorSelectedEventOptions } from './Player';
 import { Vector } from 'components';
 import { Game } from 'core';
-import { createHexon } from 'helpers';
+import { createHexon, isPointInCells } from 'helpers';
 
 interface IHexonOptions {
   color: string;
@@ -31,7 +31,7 @@ export class Drawer {
     this.drawGrid();
     this.drawHighlightedHexons();
     this.drawActiveHexons();
-    // this.drawHoveredHexon();
+    this.drawHoveredHexon();
     this.drawBuildings();
     this.drawActors();
   }
@@ -123,16 +123,22 @@ export class Drawer {
     });
   }
 
-  // drawHoveredHexon(): void {
-  //   const { field: { selectedActiveColor } } = this.options;
-  //   const hoveredPos = this.game.utils.getHoveredCell(this.game.mousePos)
+  drawHoveredHexon(): void {
+    const { player } = this.game;
+    const event = player.event;
 
-  //   if (hoveredPos) {
-  //     this.drawHexon(hoveredPos.x, hoveredPos.y, {
-  //       color: selectedActiveColor
-  //     })
-  //   }
-  // }
+    const { field: { color } } = this.config;
+    const hoveredPos = this.game.utils.getHoveredCell(this.game.mousePos);
+
+    // выбран активный объект
+    if (event && event.type === 'actorSelected') {
+      if (hoveredPos && isPointInCells(hoveredPos, event.options.activeTurnCells)) {
+        this.drawHexon(hoveredPos.x, hoveredPos.y, {
+          color: color.hover
+        })
+      }
+    }
+  }
 
   drawActiveHexons(): void {
     const { player } = this.game;
