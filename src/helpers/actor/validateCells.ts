@@ -1,11 +1,7 @@
 import { Vector } from 'components';
+import { IValidator } from 'helpers/actor/types';
 
-export interface IValidator {
-  blocker: Vector;
-  deps: Vector[];
-}
-
-export const getValidatedCells = (
+export const validateCells = (
   validators: IValidator[],
   cells: Vector[]
 ): Vector[] => {

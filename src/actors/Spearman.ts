@@ -1,36 +1,23 @@
 import { Vector } from 'components';
 import { Actor } from 'instances';
 import { IActorOptions } from 'instances/Actor/Actor';
-import { ActorNameType } from 'instances/Actor/types';
+import {
+  ActorNameType,
+  ValidatorType,
+  MoveVariantType,
+} from 'instances/Actor/types';
 import { Game } from 'core';
-import { getEvenXOffset } from 'helpers';
 import spriteUrl from 'assets/images/actors/spearman.png';
 
 export class Spearman extends Actor {
   image: HTMLImageElement;
   name: ActorNameType = 'spearman';
+  cellsForMoveVariant: MoveVariantType = '1';
+  validatorType: ValidatorType = null;
 
   constructor(game: Game, pos: Vector, options: IActorOptions = {}) {
     super(game, pos, options);
     this.image = this.getImage(spriteUrl);
-  }
-
-  getCellsForMove(): Vector[] {
-    const { x, y } = this.pos;
-    const hexonOffset = getEvenXOffset(this.pos.y, 1, -1);
-
-    return [
-      new Vector(x - 1, y),
-      new Vector(x + 1, y),
-      new Vector(x, y - 1),
-      new Vector(x, y + 1),
-      new Vector(x + hexonOffset, y - 1),
-      new Vector(x + hexonOffset, y + 1),
-    ];
-  }
-
-  validateCellsForMove(cells: Vector[]): Vector[] {
-    return cells;
   }
 
   draw(game: Game): void {
