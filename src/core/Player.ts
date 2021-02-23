@@ -44,19 +44,21 @@ export class Player {
   initInstances(): void {
     const { actors, buildings } = this.game;
 
-    actors.push(new Warrior(this.game, new Vector(0, 0)));
-    actors.push(new Warrior(this.game, new Vector(3, 3)));
-    actors.push(new Warrior(this.game, new Vector(1, 1)));
-    actors.push(new Warrior(this.game, new Vector(2, 3)));
+    actors.push(new Warrior(this.game, new Vector(0, 0), { owner: 'player' }));
+    actors.push(new Warrior(this.game, new Vector(3, 3), { owner: 'player' }));
+    actors.push(new Warrior(this.game, new Vector(1, 1), { owner: 'player' }));
+    actors.push(new Warrior(this.game, new Vector(2, 3), { owner: 'player' }));
 
-    actors.push(new Spearman(this.game, new Vector(2, 1)));
-    actors.push(new Spearman(this.game, new Vector(5, 2)));
-    actors.push(new Spearman(this.game, new Vector(6, 4)));
+    actors.push(new Spearman(this.game, new Vector(2, 1), { owner: 'player' }));
+    actors.push(new Spearman(this.game, new Vector(5, 2), { owner: 'player' }));
+    actors.push(new Spearman(this.game, new Vector(6, 4), { owner: 'player' }));
 
-    actors.push(new Worker(this.game, new Vector(5, 0)));
-    actors.push(new Worker(this.game, new Vector(6, 3)));
+    actors.push(new Worker(this.game, new Vector(5, 0), { owner: 'player' }));
+    actors.push(new Worker(this.game, new Vector(6, 3), { owner: 'player' }));
 
-    buildings.push(new MainBuilding(new Vector(1, 3)));
+    actors.push(new Spearman(this.game, new Vector(7, 7), { owner: 'enemy' }));
+
+    buildings.push(new MainBuilding(new Vector(1, 3), { owner: 'player' }));
   }
 
   resetEvent(): void {
@@ -72,10 +74,11 @@ export class Player {
       selector.select(clickedCellPos);
       
       const selected = selector.selected;
+      const selectedInstance = selected.instance
 
-      if (selected.instance) {
-        if (selected.instance.type === 'actor') {
-          this.handleSelect(selector.selected as ISelected<Actor>);
+      if (selectedInstance) {
+        if (selectedInstance.owner === 'player' && selectedInstance.type === 'actor') {
+          this.handleSelect(selected as ISelected<Actor>);
         }
       } else {
         this.handleMove(clickedCellPos);

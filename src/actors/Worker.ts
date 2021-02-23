@@ -1,9 +1,9 @@
 import { Vector } from 'components';
 import { Actor } from 'instances';
-import { IActorOptions } from 'instances/Actor/Actor';
 import {
   ActorNameType,
   ValidatorType,
+  IActorOptions,
 } from 'instances/Actor/types';
 import { Game } from 'core';
 import spriteUrl from 'assets/images/actors/worker.png';
@@ -15,9 +15,12 @@ export class Worker extends Actor {
   validatorType: ValidatorType = null;
   viewRange = new Vector(4, 4);
 
-  constructor(game: Game, pos: Vector, options: IActorOptions = {}) {
+  constructor(game: Game, pos: Vector, options: IActorOptions) {
     super(game, pos, options);
-    this.image = this.getImage(spriteUrl);
+    this.image = this.getImage({
+      player: spriteUrl,
+      enemy: spriteUrl
+    });
   }
 
   draw(game: Game): void {

@@ -1,10 +1,8 @@
 import { Vector } from 'components';
 import { Game } from 'core';
-import { IInstanceType } from 'instances/types';
-import { ActorNameType, ValidatorType } from './types';
+import { IInstanceType, OwnerType } from 'instances/types';
+import { ActorNameType, ValidatorType, IActorOptions, IActorImages } from './types';
 import { getValidatedCells, getCellsRange } from 'helpers/actor';
-
-export interface IActorOptions {}
 
 export abstract class Actor {
   game: Game;
@@ -15,6 +13,7 @@ export abstract class Actor {
   abstract viewRange: Vector;
 
   type: IInstanceType = 'actor';
+  owner: OwnerType = 'player';
 
   pos: Vector;
   options: IActorOptions;
@@ -24,11 +23,12 @@ export abstract class Actor {
     this.pos = position;
     this.options = options;
     this.game = game;
+    this.owner = options.owner;
   }
 
-  getImage(url: string): HTMLImageElement {
+  getImage(images: IActorImages): HTMLImageElement {
     const image = new Image();
-    image.src = url;
+    image.src = this.options.owner === 'player' ? images.player : images.enemy;
 
     return image;
   }

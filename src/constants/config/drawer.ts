@@ -14,13 +14,14 @@ export const DRAWER_CONFIG = {
   },
   field: {
     colors: {
-      canTurn: '#85c34b',
+      canTurn: '#178012',
       cannotTurn: '#faffc4',
       building: '#435246',
       activeCell: '#94f733',
       selectedActor: '#009688',
       hover: '#59ad2a',
       invisible: '#000',
+      enemy: 'red',
     },
   },
 };

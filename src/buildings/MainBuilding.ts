@@ -1,5 +1,6 @@
 import { Vector } from 'components';
 import { Building } from 'instances';
+import { IBuildingOptions } from 'instances/Building/types';
 import { Game } from 'core';
 import spriteUrl from 'assets/images/buildings/main.png';
 
@@ -10,7 +11,7 @@ const OPTIONS = {
 export class MainBuilding extends Building {
   image: HTMLImageElement;
 
-  constructor(position: Vector, options = {}) {
+  constructor(position: Vector, options: IBuildingOptions) {
     super(position, options);
     this.image = this.getImage(spriteUrl);
   }

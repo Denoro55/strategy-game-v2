@@ -81,10 +81,17 @@ export class Utils {
   };
 
   // удалить клетки вне сцены
-  // TODO: доделать границы правого верхнего и нижнего края
   getCellsOnlyOnStage = (cells: Vector[]): Vector[] => {
+    const { config } = this.game;
+
     return cells.filter((cell) => {
-      if (cell.x < 0 || cell.y < 0) return false;
+      if (
+        cell.x < 0 ||
+        cell.y < 0 ||
+        cell.x > config.stage.grid.x - 1 ||
+        cell.y > config.stage.grid.y - 1
+      )
+        return false;
       return true;
     });
   };

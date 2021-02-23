@@ -1,9 +1,9 @@
 import { Vector } from 'components';
 import { Actor } from 'instances';
-import { IActorOptions } from 'instances/Actor/Actor';
 import {
   ActorNameType,
   ValidatorType,
+  IActorOptions,
 } from 'instances/Actor/types';
 import { Game } from 'core';
 import spriteUrl from 'assets/images/actors/warrior.png';
@@ -11,13 +11,16 @@ import spriteUrl from 'assets/images/actors/warrior.png';
 export class Warrior extends Actor {
   image: HTMLImageElement;
   name: ActorNameType = 'warrior';
-  cellsForMoveRange = new Vector(2, 2);
+  cellsForMoveRange = new Vector(4, 4);
   validatorType: ValidatorType = '2';
   viewRange = new Vector(4, 4);
 
-  constructor(game: Game, pos: Vector, options: IActorOptions = {}) {
+  constructor(game: Game, pos: Vector, options: IActorOptions) {
     super(game, pos, options);
-    this.image = this.getImage(spriteUrl);
+    this.image = this.getImage({
+      player: spriteUrl,
+      enemy: spriteUrl
+    });
   }
 
   draw(game: Game): void {

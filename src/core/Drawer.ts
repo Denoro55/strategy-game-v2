@@ -108,13 +108,18 @@ export class Drawer {
 
     actors.forEach((actor) => {
       // подсветка полей в зависимости от статуса хода
-      const color = actor.canTurn ? colors.canTurn : colors.cannotTurn;
+      let color = '';
+      
+      if (actor.owner === 'enemy') {
+        color = colors.enemy
+      } else if (actor.owner === 'player') {
+        color = actor.canTurn ? colors.canTurn : colors.cannotTurn;
+      }
+
       this.drawHexon(actor.pos.x, actor.pos.y, {
         color,
         alpha: 0.5,
       });
-
-      actor.draw(this.game);
     });
 
     buildings.forEach((building) => {
@@ -123,8 +128,6 @@ export class Drawer {
           color: colors.building,
         });
       });
-
-      building.draw(this.game);
     });
   }
 
