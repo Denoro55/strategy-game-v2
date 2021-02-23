@@ -12,4 +12,7 @@ export const ACTORS_CONFIG: IActorsConfig = {
   spearman: {
     size: new Vector(60, 60),
   },
+  worker: {
+    size: new Vector(60, 60),
+  },
 };

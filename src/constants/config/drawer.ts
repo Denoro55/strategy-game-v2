@@ -13,13 +13,14 @@ export const DRAWER_CONFIG = {
     color: '#a8e8f5',
   },
   field: {
-    color: {
+    colors: {
       canTurn: '#85c34b',
       cannotTurn: '#faffc4',
       building: '#435246',
       activeCell: '#94f733',
       selectedActor: '#009688',
       hover: '#59ad2a',
+      invisible: '#000',
     },
   },
 };

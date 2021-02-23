@@ -1,10 +1,11 @@
 import { Vector } from 'components';
-import { Warrior, Spearman } from 'actors';
+import { Warrior, Spearman, Worker } from 'actors';
 import { MainBuilding } from 'buildings';
 import { Actor } from 'instances';
 import { Game } from 'core';
 import { ISelected } from './Selector';
 import { getEmptyCells, isPointInCells } from 'helpers';
+import { getCellsRange } from 'helpers/actor';
 
 export interface IActorSelectedEventOptions {
   selected: ISelected<Actor>;
@@ -18,6 +19,7 @@ type IActorSelectedEvent = {
 
 export class Player {
   game: Game;
+  viewRange: Vector[] = [];
   event: IActorSelectedEvent | null = null;
 
   constructor(game: Game) {
@@ -25,15 +27,34 @@ export class Player {
   }
 
   init(): void {
+    this.initInstances();
+    this.updateViewRange();
+  }
+
+  updateViewRange(): void {
+    const { actors } = this.game;
+    this.viewRange = [];
+
+    [...actors].forEach(instance => {
+      const viewCells = getCellsRange(instance.viewRange, instance.pos);
+      this.viewRange.push(...viewCells);
+    })
+  }
+
+  initInstances(): void {
     const { actors, buildings } = this.game;
 
     actors.push(new Warrior(this.game, new Vector(0, 0)));
     actors.push(new Warrior(this.game, new Vector(3, 3)));
-    actors.push(new Spearman(this.game, new Vector(2, 1)));
     actors.push(new Warrior(this.game, new Vector(1, 1)));
     actors.push(new Warrior(this.game, new Vector(2, 3)));
+
+    actors.push(new Spearman(this.game, new Vector(2, 1)));
     actors.push(new Spearman(this.game, new Vector(5, 2)));
     actors.push(new Spearman(this.game, new Vector(6, 4)));
+
+    actors.push(new Worker(this.game, new Vector(5, 0)));
+    actors.push(new Worker(this.game, new Vector(6, 3)));
 
     buildings.push(new MainBuilding(new Vector(1, 3)));
   }
@@ -105,8 +126,9 @@ export class Player {
 
       if (isPointInCells(clickedCellPos, options.activeTurnCells)) {
         const selectedInstance = options.selected.instance;
-        this.resetEvent();
         selectedInstance.setPosition(clickedCellPos);
+        this.resetEvent();
+        this.updateViewRange();
         // selectedInstance.endTurn();
       }
     }

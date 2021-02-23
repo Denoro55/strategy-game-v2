@@ -1,8 +1,8 @@
 import { Vector } from 'components';
 import { Game } from 'core';
 import { IInstanceType } from 'instances/types';
-import { ActorNameType, MoveVariantType, ValidatorType } from './types';
-import { getValidatedCells, getGeneratedCellsForMove } from 'helpers/actor';
+import { ActorNameType, ValidatorType } from './types';
+import { getValidatedCells, getCellsRange } from 'helpers/actor';
 
 export interface IActorOptions {}
 
@@ -10,8 +10,9 @@ export abstract class Actor {
   game: Game;
 
   abstract name: ActorNameType;
-  abstract cellsForMoveVariant: MoveVariantType;
+  abstract cellsForMoveRange: Vector;
   abstract validatorType: ValidatorType;
+  abstract viewRange: Vector;
 
   type: IInstanceType = 'actor';
 
@@ -51,7 +52,7 @@ export abstract class Actor {
   }
 
   getCellsForMove(): Vector[] {
-    return getGeneratedCellsForMove(this.cellsForMoveVariant, this.pos);
+    return getCellsRange(this.cellsForMoveRange, this.pos);
   }
 
   validateCellsForMove(cells: Vector[]): Vector[] {

@@ -12,6 +12,9 @@ export const getValidatedCells = (
   const { x, y } = pos;
   const hexonOffset = getEvenXOffset(pos.y, 0, -1);
 
+  // TODO: сделать универсальную проверку
+  return cells;
+
   switch (type) {
     case '2': {
       const validators: IValidator[] = [

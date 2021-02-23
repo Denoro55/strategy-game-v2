@@ -71,10 +71,11 @@ export class Drawer {
     const {
       grid: { x, y },
     } = this.game.config.stage;
-    const { viewOffset, stageCells } = this.game;
+    const { viewOffset, stageCells, player } = this.game;
     const {
       cell: { color },
     } = this.config;
+    const { colors } = this.game.config.drawer.field
 
     const lenX = stageCells.x;
     const lenY = stageCells.y;
@@ -92,14 +93,18 @@ export class Drawer {
 
     for (let xx = startX; xx < endX; xx++) {
       for (let yy = startY; yy < endY; yy++) {
-        this.drawHexon(xx, yy, { color });
+        if (isPointInCells(new Vector(xx, yy), player.viewRange)) {
+          this.drawHexon(xx, yy, { color });
+        } else {
+          this.drawHexon(xx, yy, { color: colors.invisible });
+        }
       }
     }
   }
 
   drawHighlightedHexons(): void {
     const { actors, buildings } = this.game;
-    const colors = this.config.field.color;
+    const colors = this.config.field.colors;
 
     actors.forEach((actor) => {
       // подсветка полей в зависимости от статуса хода
@@ -127,14 +132,14 @@ export class Drawer {
     const { player } = this.game;
     const event = player.event;
 
-    const { field: { color } } = this.config;
+    const { field: { colors } } = this.config;
     const hoveredPos = this.game.utils.getHoveredCell(this.game.mousePos);
 
     // выбран активный объект
     if (event && event.type === 'actorSelected') {
       if (hoveredPos && isPointInCells(hoveredPos, event.options.activeTurnCells)) {
         this.drawHexon(hoveredPos.x, hoveredPos.y, {
-          color: color.hover
+          color: colors.hover
         })
       }
     }
@@ -142,7 +147,7 @@ export class Drawer {
 
   drawActiveHexons(): void {
     const { player } = this.game;
-    const colors = this.config.field.color;
+    const colors = this.config.field.colors;
     const event = player.event;
 
     // выбран активный объект

@@ -6,11 +6,11 @@ import {
   ValidatorType,
 } from 'instances/Actor/types';
 import { Game } from 'core';
-import spriteUrl from 'assets/images/actors/spearman.png';
+import spriteUrl from 'assets/images/actors/worker.png';
 
-export class Spearman extends Actor {
+export class Worker extends Actor {
   image: HTMLImageElement;
-  name: ActorNameType = 'spearman';
+  name: ActorNameType = 'worker';
   cellsForMoveRange = new Vector(1, 1);
   validatorType: ValidatorType = null;
   viewRange = new Vector(4, 4);
