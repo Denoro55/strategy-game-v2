@@ -4,12 +4,13 @@ import { MainBuilding } from 'buildings';
 import { Actor } from 'instances';
 import { Game } from 'core';
 import { ISelected } from './Selector';
-import { getEmptyCells, isCellInCells } from 'helpers';
-import { getCellsRange } from 'helpers/actor';
+import { getEmptyCells, isCellInCells, getCellsRange } from 'helpers';
 
 export interface IActorSelectedEventOptions {
   selected: ISelected<Actor>;
-  activeTurnCells: Vector[];
+  availableCellsForMove: Vector[];
+  blockers: Actor[];
+  availableBlockersForAttack: Actor[];
 }
 
 type IActorSelectedEvent = {
@@ -36,7 +37,7 @@ export class Player {
     this.viewRange = [];
 
     [...actors].forEach((instance) => {
-      const viewCells = getCellsRange(instance.viewRange, instance.pos);
+      const viewCells = getCellsRange(instance.pos, instance.viewRange);
       this.viewRange.push(...viewCells);
     });
   }
@@ -56,7 +57,7 @@ export class Player {
     actors.push(new Worker(this.game, new Vector(5, 0), { owner: 'player' }));
     actors.push(new Worker(this.game, new Vector(6, 3), { owner: 'player' }));
 
-    actors.push(new Spearman(this.game, new Vector(7, 7), { owner: 'enemy' }));
+    actors.push(new Spearman(this.game, new Vector(7, 8), { owner: 'enemy' }));
     actors.push(new Spearman(this.game, new Vector(5, 9), { owner: 'enemy' }));
 
     buildings.push(new MainBuilding(new Vector(1, 3), { owner: 'player' }));
@@ -106,15 +107,23 @@ export class Player {
 
     if (instance.canTurn) {
       const turnCells = utils.getCellsOnlyOnStage(instance.getCellsForMove());
-
       const { emptyCells, blockers } = getEmptyCells(turnCells, actors);
 
-      const activeTurnCells = instance.validateCellsForMove(
+      const availableCellsForMove = instance.validateCellsForMove(
         emptyCells,
         blockers
       );
 
-      this.selectActor(selected, activeTurnCells);
+      const availableBlockersForAttack = instance.getAvailableCellsForAttack(
+        blockers
+      );
+
+      this.selectActor(
+        selected,
+        availableCellsForMove,
+        blockers,
+        availableBlockersForAttack
+      );
     }
   }
 
@@ -124,7 +133,7 @@ export class Player {
     if (currentEvent && currentEvent.type === 'actorSelected') {
       const options = currentEvent.options as IActorSelectedEventOptions;
 
-      if (isCellInCells(clickedCellPos, options.activeTurnCells)) {
+      if (isCellInCells(clickedCellPos, options.availableCellsForMove)) {
         const selectedInstance = options.selected.instance;
         this.moveActor(selectedInstance, clickedCellPos);
       }
@@ -138,12 +147,19 @@ export class Player {
     // selectedInstance.endTurn();
   }
 
-  selectActor(selected: ISelected<Actor>, activeTurnCells: Vector[]): void {
+  selectActor(
+    selected: ISelected<Actor>,
+    availableCellsForMove: Vector[],
+    blockers: Actor[],
+    availableBlockersForAttack: Actor[]
+  ): void {
     this.event = {
       type: 'actorSelected',
       options: {
         selected,
-        activeTurnCells,
+        availableCellsForMove,
+        availableBlockersForAttack,
+        blockers,
       },
     };
   }

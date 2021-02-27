@@ -2,7 +2,6 @@ import { Vector } from 'components';
 import { Actor } from 'instances';
 import {
   ActorNameType,
-  ValidatorType,
   IActorOptions
 } from 'instances/Actor/types';
 import { Game } from 'core';
@@ -12,9 +11,9 @@ import spriteEnemyUrl from 'assets/images/actors/spearman-enemy.png';
 export class Spearman extends Actor {
   image: HTMLImageElement;
   name: ActorNameType = 'spearman';
-  cellsForMoveRange = new Vector(1, 1);
-  validatorType: ValidatorType = null;
-  viewRange = new Vector(4, 4);
+  cellsForMoveRange = 1;
+  viewRange = 4;
+  attackRange = 2;
 
   constructor(game: Game, pos: Vector, options: IActorOptions) {
     super(game, pos, options);

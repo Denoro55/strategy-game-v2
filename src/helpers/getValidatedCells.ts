@@ -11,7 +11,7 @@ import { EventEmitter } from 'core/EventEmitter';
 
 export const getValidatedCells = (
   pos: Vector,
-  size: Vector,
+  size: number,
   cells: Vector[],
   blockers: Actor[]
 ): Vector[] => {
@@ -30,7 +30,7 @@ export const getValidatedCells = (
     );
 
     const angleBetween = getAngleBetweenPoints(blockerPos, instancePos);
-    const distance = size.x;
+    const distance = size;
     const rotAngle = angleToRadians(45);
 
     const polygonArea: Vector[] = [

@@ -15,6 +15,7 @@ export class EventListener {
   isDragging: boolean;
   options: IScrollerOptions;
   startPos: Vector;
+  startOffset: Vector;
 
   constructor(game: Game, options: IScrollerOptions) {
     this.game = game;
@@ -22,6 +23,7 @@ export class EventListener {
     this.options = options;
 
     this.startPos = new Vector(0, 0);
+    this.startOffset = new Vector(0, 0);
     this.isDragging = false;
 
     this.initListeners();
@@ -38,8 +40,6 @@ export class EventListener {
       'mouseleave',
       this.handleMouseLeave.bind(this)
     );
-
-    this.$canvas.addEventListener('click', this.handleMouseClick.bind(this));
 
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
   }
@@ -59,16 +59,23 @@ export class EventListener {
       event.offsetX + offsetPxPosition.x,
       event.offsetY + offsetPxPosition.y
     );
+    this.startOffset = new Vector(viewOffset.x, viewOffset.y);
   }
 
-  handleMouseClick(event: MouseEvent): void {
+  handleMouseUp(event: MouseEvent): void {
     const { onMouseClick } = this.options;
+    const { viewOffset } = this.game;
 
-    onMouseClick(new Vector(event.offsetX, event.offsetY));
-  }
-
-  handleMouseUp(): void {
     this.isDragging = false;
+
+    const range = 0.08;
+
+    if (
+      Math.abs(viewOffset.x - this.startOffset.x) < range &&
+      Math.abs(viewOffset.x - this.startOffset.x) < range
+    ) {
+      onMouseClick(new Vector(event.offsetX, event.offsetY));
+    }
   }
 
   handleMouseMove(event: MouseEvent): void {

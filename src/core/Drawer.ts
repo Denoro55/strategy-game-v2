@@ -119,6 +119,7 @@ export class Drawer {
       let color = '';
 
       if (actor.owner === 'enemy') {
+        return;
         color = colors.enemy;
       } else if (actor.owner === 'player') {
         color = actor.canTurn ? colors.canTurn : colors.cannotTurn;
@@ -152,7 +153,7 @@ export class Drawer {
     if (event && event.type === 'actorSelected') {
       if (
         hoveredPos &&
-        isCellInCells(hoveredPos, event.options.activeTurnCells)
+        isCellInCells(hoveredPos, event.options.availableCellsForMove)
       ) {
         this.drawHexon(hoveredPos.x, hoveredPos.y, {
           color: colors.hover,
@@ -178,11 +179,21 @@ export class Drawer {
       });
 
       // позиции доступных ходов
-      eventOptions.activeTurnCells.forEach((activeCell) => {
+      eventOptions.availableCellsForMove.forEach((activeCell) => {
         this.drawHexon(activeCell.x, activeCell.y, {
           color: colors.activeCell,
           alpha: 0.8,
         });
+      });
+
+      // позиции врагов
+      eventOptions.availableBlockersForAttack.forEach((blocker) => {
+        if (blocker.owner === 'enemy' && blocker.type === 'actor') {
+          this.drawHexon(blocker.pos.x, blocker.pos.y, {
+            color: colors.enemy,
+            alpha: 0.8,
+          });
+        }
       });
     }
   }

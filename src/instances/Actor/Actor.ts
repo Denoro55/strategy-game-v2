@@ -1,16 +1,16 @@
 import { Vector } from 'components';
 import { Game } from 'core';
 import { IInstanceType, OwnerType } from 'instances/types';
-import { ActorNameType, ValidatorType, IActorOptions, IActorImages } from './types';
-import { getValidatedCells, getCellsRange } from 'helpers/actor';
+import { ActorNameType, IActorOptions, IActorImages } from './types';
+import { isCellInCells, getCellsRange, getValidatedCells } from 'helpers';
 
 export abstract class Actor {
   game: Game;
 
   abstract name: ActorNameType;
-  abstract cellsForMoveRange: Vector;
-  abstract validatorType: ValidatorType;
-  abstract viewRange: Vector;
+  abstract cellsForMoveRange: number;
+  abstract viewRange: number;
+  abstract attackRange: number;
 
   type: IInstanceType = 'actor';
   owner: OwnerType = 'player';
@@ -52,11 +52,16 @@ export abstract class Actor {
   }
 
   getCellsForMove(): Vector[] {
-    return getCellsRange(this.cellsForMoveRange, this.pos);
+    return getCellsRange(this.pos, this.cellsForMoveRange);
   }
 
   validateCellsForMove(cells: Vector[], blockers: Actor[]): Vector[] {
     return getValidatedCells(this.pos, this.cellsForMoveRange, cells, blockers);
+  }
+
+  getAvailableCellsForAttack(blockers: Actor[]): Actor[] {
+    const currentRange = getCellsRange(this.pos, this.attackRange);
+    return blockers.filter(blocker => isCellInCells(blocker.pos, currentRange))
   }
 
   abstract draw(game: Game): void;

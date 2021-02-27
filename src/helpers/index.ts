@@ -6,4 +6,6 @@ export { isCellInCells } from './isCellInCells';
 export { getAngleBetweenPoints } from './getAngleBetweenPoints';
 export { angleToRadians } from './angleToRadians';
 export { isPolygonInPolygon } from './isPolygonInPolygon';
-export { centerVectors } from './centerVectors';
+export { isCellInRange } from './isCellInRange';
+export { getCellsRange } from './getCellsRange';
+export { getValidatedCells } from './getValidatedCells';

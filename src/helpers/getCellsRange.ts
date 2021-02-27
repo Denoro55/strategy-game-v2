@@ -1,17 +1,17 @@
 import { Vector } from 'components';
 import { getEvenXOffset } from 'helpers';
 
-export const getCellsRange = (size: Vector, pos: Vector): Vector[] => {
+export const getCellsRange = (pos: Vector, range: number): Vector[] => {
   const { x } = pos;
   const result: Vector[] = [];
 
-  const startX = x - size.x;
+  const startX = x - range;
 
-  for (let xx = startX; xx < startX + size.x; xx++) {
+  for (let xx = startX; xx < startX + range; xx++) {
     result.push(new Vector(xx, pos.y))
   }
 
-  for (let xx = x + 1; xx < x + 1 + size.x; xx++) {
+  for (let xx = x + 1; xx < x + 1 + range; xx++) {
     result.push(new Vector(xx, pos.y))
   }
 
@@ -25,18 +25,18 @@ export const getCellsRange = (size: Vector, pos: Vector): Vector[] => {
     const xOffset3 = Math.floor(iterY / 2);
     const startX = posOffset ? xOffset2 : xOffset3;
     const startY = posOffset ? xOffset3 : xOffset2;
-    for (let xx = pos.x - size.x + startX; xx < pos.x + size.x - startY; xx++) {
+    for (let xx = pos.x - range + startX; xx < pos.x + range - startY; xx++) {
       result.push(new Vector(xx + xOffset, yy))
     }
   }
 
-  for (let yy = pos.y + 1; yy < pos.y + 1 + size.y; yy++) {
+  for (let yy = pos.y + 1; yy < pos.y + 1 + range; yy++) {
     iterate(yy);
     iterY++;
   }
 
   iterY = 0;
-  for (let yy = pos.y - 1; yy > pos.y - 1 - size.y; yy--) {
+  for (let yy = pos.y - 1; yy > pos.y - 1 - range; yy--) {
     iterate(yy);
     iterY++;
   }
