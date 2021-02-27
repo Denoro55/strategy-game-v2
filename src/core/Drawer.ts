@@ -2,7 +2,8 @@ import { CONFIG } from 'constants/config';
 import { IActorSelectedEventOptions } from './Player';
 import { Vector } from 'components';
 import { Game } from 'core';
-import { createHexon, isPointInCells } from 'helpers';
+import { createHexon, isCellInCells } from 'helpers';
+import { EventEmitter, IActionType } from './EventEmitter';
 
 interface IHexonOptions {
   color: string;
@@ -15,11 +16,17 @@ export class Drawer {
   config: typeof CONFIG['drawer'];
   stagePadding: number;
 
+  debugPolygon: Vector[] = [];
+
   constructor(game: Game) {
     this.game = game;
     this.$ctx = game.$ctx;
     this.config = game.config.drawer;
     this.stagePadding = game.config.stage.stagePadding;
+
+    // EventEmitter.subscribe('debugArea', (action: IActionType) => {
+    //   this.debugPolygon = action.payload;
+    // })
   }
 
   draw(): void {
@@ -34,6 +41,7 @@ export class Drawer {
     this.drawHoveredHexon();
     this.drawBuildings();
     this.drawActors();
+    this.drawDebug();
   }
 
   drawBackground(): void {
@@ -75,7 +83,7 @@ export class Drawer {
     const {
       cell: { color },
     } = this.config;
-    const { colors } = this.game.config.drawer.field
+    const { colors } = this.game.config.drawer.field;
 
     const lenX = stageCells.x;
     const lenY = stageCells.y;
@@ -93,7 +101,7 @@ export class Drawer {
 
     for (let xx = startX; xx < endX; xx++) {
       for (let yy = startY; yy < endY; yy++) {
-        if (isPointInCells(new Vector(xx, yy), player.viewRange)) {
+        if (isCellInCells(new Vector(xx, yy), player.viewRange)) {
           this.drawHexon(xx, yy, { color });
         } else {
           this.drawHexon(xx, yy, { color: colors.invisible });
@@ -109,9 +117,9 @@ export class Drawer {
     actors.forEach((actor) => {
       // подсветка полей в зависимости от статуса хода
       let color = '';
-      
+
       if (actor.owner === 'enemy') {
-        color = colors.enemy
+        color = colors.enemy;
       } else if (actor.owner === 'player') {
         color = actor.canTurn ? colors.canTurn : colors.cannotTurn;
       }
@@ -135,15 +143,20 @@ export class Drawer {
     const { player } = this.game;
     const event = player.event;
 
-    const { field: { colors } } = this.config;
+    const {
+      field: { colors },
+    } = this.config;
     const hoveredPos = this.game.utils.getHoveredCell(this.game.mousePos);
 
     // выбран активный объект
     if (event && event.type === 'actorSelected') {
-      if (hoveredPos && isPointInCells(hoveredPos, event.options.activeTurnCells)) {
+      if (
+        hoveredPos &&
+        isCellInCells(hoveredPos, event.options.activeTurnCells)
+      ) {
         this.drawHexon(hoveredPos.x, hoveredPos.y, {
-          color: colors.hover
-        })
+          color: colors.hover,
+        });
       }
     }
   }
@@ -228,5 +241,27 @@ export class Drawer {
     buildings.forEach((building) => {
       building.draw(this.game);
     });
+  }
+
+  drawDebug(): void {
+    const $ctx = this.$ctx;
+    const { debugPolygon } = this;
+    const {
+      game: { utils },
+    } = this;
+
+    $ctx.beginPath();
+    $ctx.fillStyle = 'black';
+
+    debugPolygon.forEach((point, index) => {
+      if (index === 0) {
+        $ctx.moveTo(...utils.getDrawPosition(point).spread());
+      } else {
+        $ctx.lineTo(...utils.getDrawPosition(point).spread());
+      }
+    });
+
+    $ctx.closePath();
+    $ctx.fill();
   }
 }

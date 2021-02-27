@@ -4,7 +4,7 @@ import { MainBuilding } from 'buildings';
 import { Actor } from 'instances';
 import { Game } from 'core';
 import { ISelected } from './Selector';
-import { getEmptyCells, isPointInCells } from 'helpers';
+import { getEmptyCells, isCellInCells } from 'helpers';
 import { getCellsRange } from 'helpers/actor';
 
 export interface IActorSelectedEventOptions {
@@ -13,9 +13,9 @@ export interface IActorSelectedEventOptions {
 }
 
 type IActorSelectedEvent = {
-  type: 'actorSelected',
-  options: IActorSelectedEventOptions
-}
+  type: 'actorSelected';
+  options: IActorSelectedEventOptions;
+};
 
 export class Player {
   game: Game;
@@ -35,10 +35,10 @@ export class Player {
     const { actors } = this.game;
     this.viewRange = [];
 
-    [...actors].forEach(instance => {
+    [...actors].forEach((instance) => {
       const viewCells = getCellsRange(instance.viewRange, instance.pos);
       this.viewRange.push(...viewCells);
-    })
+    });
   }
 
   initInstances(): void {
@@ -57,6 +57,7 @@ export class Player {
     actors.push(new Worker(this.game, new Vector(6, 3), { owner: 'player' }));
 
     actors.push(new Spearman(this.game, new Vector(7, 7), { owner: 'enemy' }));
+    actors.push(new Spearman(this.game, new Vector(5, 9), { owner: 'enemy' }));
 
     buildings.push(new MainBuilding(new Vector(1, 3), { owner: 'player' }));
   }
@@ -72,12 +73,15 @@ export class Player {
 
     if (clickedCellPos) {
       selector.select(clickedCellPos);
-      
+
       const selected = selector.selected;
-      const selectedInstance = selected.instance
+      const selectedInstance = selected.instance;
 
       if (selectedInstance) {
-        if (selectedInstance.owner === 'player' && selectedInstance.type === 'actor') {
+        if (
+          selectedInstance.owner === 'player' &&
+          selectedInstance.type === 'actor'
+        ) {
           this.handleSelect(selected as ISelected<Actor>);
         }
       } else {
@@ -91,33 +95,26 @@ export class Player {
 
     if (selectedInstance) {
       if (selectedInstance.type === 'actor') {
-        this.selectActor(selected);
+        this.handleSelectActor(selected);
       }
     }
   }
 
-  selectActor(selected: ISelected<Actor>): void {
-    const { actors, buildings, utils } = this.game;
+  handleSelectActor(selected: ISelected<Actor>): void {
+    const { actors, utils } = this.game;
     const instance = selected.instance as Actor;
 
     if (instance.canTurn) {
       const turnCells = utils.getCellsOnlyOnStage(instance.getCellsForMove());
-      const collides = [...actors, ...buildings].reduce(
-        (acc: Vector[], instance) => {
-          return [...acc, ...instance.getPositions()];
-        },
-        []
+
+      const { emptyCells, blockers } = getEmptyCells(turnCells, actors);
+
+      const activeTurnCells = instance.validateCellsForMove(
+        emptyCells,
+        blockers
       );
 
-      const activeTurnCells = instance.validateCellsForMove(getEmptyCells(turnCells, collides));
-
-      this.event = {
-        type: 'actorSelected',
-        options: {
-          selected,
-          activeTurnCells,
-        }
-      }
+      this.selectActor(selected, activeTurnCells);
     }
   }
 
@@ -127,13 +124,27 @@ export class Player {
     if (currentEvent && currentEvent.type === 'actorSelected') {
       const options = currentEvent.options as IActorSelectedEventOptions;
 
-      if (isPointInCells(clickedCellPos, options.activeTurnCells)) {
+      if (isCellInCells(clickedCellPos, options.activeTurnCells)) {
         const selectedInstance = options.selected.instance;
-        selectedInstance.setPosition(clickedCellPos);
-        this.resetEvent();
-        this.updateViewRange();
-        // selectedInstance.endTurn();
+        this.moveActor(selectedInstance, clickedCellPos);
       }
     }
+  }
+
+  moveActor(instance: Actor, pos: Vector): void {
+    instance.setPosition(pos);
+    this.resetEvent();
+    this.updateViewRange();
+    // selectedInstance.endTurn();
+  }
+
+  selectActor(selected: ISelected<Actor>, activeTurnCells: Vector[]): void {
+    this.event = {
+      type: 'actorSelected',
+      options: {
+        selected,
+        activeTurnCells,
+      },
+    };
   }
 }

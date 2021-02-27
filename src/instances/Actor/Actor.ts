@@ -55,8 +55,8 @@ export abstract class Actor {
     return getCellsRange(this.cellsForMoveRange, this.pos);
   }
 
-  validateCellsForMove(cells: Vector[]): Vector[] {
-    return getValidatedCells(this.validatorType, this.pos, cells);
+  validateCellsForMove(cells: Vector[], blockers: Actor[]): Vector[] {
+    return getValidatedCells(this.pos, this.cellsForMoveRange, cells, blockers);
   }
 
   abstract draw(game: Game): void;
