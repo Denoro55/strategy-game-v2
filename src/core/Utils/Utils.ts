@@ -1,12 +1,17 @@
 import { Vector } from 'components';
-import { Game } from 'core';
-import { createHexon, isPointInPolygon, getEvenXOffset } from 'helpers';
+import { Game, InstanceUtils, DrawUtils } from 'core';
+import { createHexon, isPointInPolygon } from 'helpers';
 
 export class Utils {
   game: Game;
+  instances: InstanceUtils;
+  draw: DrawUtils;
 
   constructor(game: Game) {
     this.game = game;
+
+    this.instances = new InstanceUtils(game);
+    this.draw = new DrawUtils(game);
 
     this.convertPosition = this.convertPosition.bind(this);
   }
@@ -95,33 +100,4 @@ export class Utils {
       return true;
     });
   };
-
-  getDrawPosition(pos: Vector): Vector {
-    const {
-      viewOffset,
-      config: {
-        stage: { cellSize },
-      },
-    } = this.game;
-    const viewPxOffset: Vector = this.game.utils.convertPosition(
-      viewOffset,
-      true
-    );
-
-    return new Vector(
-      pos.x * cellSize.x - viewPxOffset.x,
-      pos.y * cellSize.y - viewPxOffset.y
-    );
-  }
-
-  getDrawVector(pos: Vector, basePos: Vector): Vector {
-    const { x, y } = pos;
-    const evenXOffset = getEvenXOffset(Math.floor(basePos.y)); // сдвиг четных рядов для корректного отображения гексонов
-
-    return this.getDrawPosition(new Vector(x + evenXOffset, y));
-  }
-
-  getDrawCellOffset(size: Vector, cellSize: Vector): Vector {
-    return new Vector(size.x / cellSize.x / 2, size.y / cellSize.y / 2);
-  }
 }

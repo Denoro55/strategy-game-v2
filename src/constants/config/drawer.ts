@@ -22,6 +22,7 @@ export const DRAWER_CONFIG = {
       hover: '#59ad2a',
       invisible: '#000',
       enemy: 'red',
+      enemyHover: '#f44336',
     },
   },
 };

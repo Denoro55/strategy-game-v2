@@ -9,3 +9,5 @@ export { isPolygonInPolygon } from './isPolygonInPolygon';
 export { isCellInRange } from './isCellInRange';
 export { getCellsRange } from './getCellsRange';
 export { getValidatedCells } from './getValidatedCells';
+export { getRandomValue } from './getRandomValue';
+export { getPercent } from './getPercent';

@@ -1,11 +1,11 @@
-export interface IActionType {
+export interface IActionType<T> {
   type: string;
-  payload: any;
+  payload: T;
 }
 
 interface IListener {
   type: string;
-  cb: (action: IActionType) => void;
+  cb: (action: IActionType<any>) => void;
 }
 
 export class Emitter {
@@ -18,7 +18,7 @@ export class Emitter {
     });
   }
 
-  dispatch(action: IActionType): void {
+  dispatch(action: IActionType<any>): void {
     this.listeners.forEach((l) => {
       if (l.type === action.type) {
         l.cb(action);

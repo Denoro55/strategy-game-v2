@@ -64,8 +64,8 @@ export class Drawer {
     $ctx.fillStyle = color;
     // из-за сдвига гексонов прибавим 1 дополнительную ячейку для фона
     $ctx.fillRect(
-      ...utils
-        .getDrawPosition(
+      ...utils.draw
+        .getPosition(
           new Vector(-this.stagePadding, -this.stagePadding * 1.75)
         )
         .spread(),
@@ -150,13 +150,18 @@ export class Drawer {
     const hoveredPos = this.game.utils.getHoveredCell(this.game.mousePos);
 
     // выбран активный объект
-    if (event && event.type === 'actorSelected') {
-      if (
-        hoveredPos &&
-        isCellInCells(hoveredPos, event.options.availableCellsForMove)
-      ) {
+    if (hoveredPos && event && event.type === 'actorSelected') {
+      // клетки для движения
+      if (isCellInCells(hoveredPos, event.options.availableCellsForMove)) {
         this.drawHexon(hoveredPos.x, hoveredPos.y, {
           color: colors.hover,
+        });
+      }
+
+      // клетки врагов для атаки
+      if (isCellInCells(hoveredPos, event.options.availableBlockersCellsForAttack)) {
+        this.drawHexon(hoveredPos.x, hoveredPos.y, {
+          color: colors.enemyHover,
         });
       }
     }
@@ -215,11 +220,11 @@ export class Drawer {
     const drawPolygon = () => {
       $ctx.beginPath();
       $ctx.moveTo(
-        ...utils.getDrawPosition(new Vector(hexon[0].x, hexon[0].y)).spread()
+        ...utils.draw.getPosition(new Vector(hexon[0].x, hexon[0].y)).spread()
       );
       for (let i = 1; i < hexon.length; i++) {
         $ctx.lineTo(
-          ...utils.getDrawPosition(new Vector(hexon[i].x, hexon[i].y)).spread()
+          ...utils.draw.getPosition(new Vector(hexon[i].x, hexon[i].y)).spread()
         );
       }
       $ctx.closePath();
@@ -266,9 +271,9 @@ export class Drawer {
 
     debugPolygon.forEach((point, index) => {
       if (index === 0) {
-        $ctx.moveTo(...utils.getDrawPosition(point).spread());
+        $ctx.moveTo(...utils.draw.getPosition(point).spread());
       } else {
-        $ctx.lineTo(...utils.getDrawPosition(point).spread());
+        $ctx.lineTo(...utils.draw.getPosition(point).spread());
       }
     });
 

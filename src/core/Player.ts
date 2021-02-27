@@ -11,6 +11,7 @@ export interface IActorSelectedEventOptions {
   availableCellsForMove: Vector[];
   blockers: Actor[];
   availableBlockersForAttack: Actor[];
+  availableBlockersCellsForAttack: Vector[];
 }
 
 type IActorSelectedEvent = {
@@ -43,22 +44,25 @@ export class Player {
   }
 
   initInstances(): void {
-    const { actors, buildings } = this.game;
+    const { buildings, utils } = this.game;
 
-    actors.push(new Warrior(this.game, new Vector(0, 0), { owner: 'player' }));
-    actors.push(new Warrior(this.game, new Vector(3, 3), { owner: 'player' }));
-    actors.push(new Warrior(this.game, new Vector(1, 1), { owner: 'player' }));
-    actors.push(new Warrior(this.game, new Vector(2, 3), { owner: 'player' }));
+    utils.instances.addActor(Warrior, new Vector(0, 0), { owner: 'player' });
+    utils.instances.addActor(Warrior, new Vector(3, 3), { owner: 'player' });
+    utils.instances.addActor(Warrior, new Vector(1, 1), { owner: 'player' });
+    utils.instances.addActor(Warrior, new Vector(2, 3), { owner: 'player' });
 
-    actors.push(new Spearman(this.game, new Vector(2, 1), { owner: 'player' }));
-    actors.push(new Spearman(this.game, new Vector(5, 2), { owner: 'player' }));
-    actors.push(new Spearman(this.game, new Vector(6, 4), { owner: 'player' }));
+    utils.instances.addActor(Spearman, new Vector(2, 1), { owner: 'player' });
+    utils.instances.addActor(Spearman, new Vector(5, 2), { owner: 'player' });
+    utils.instances.addActor(Spearman, new Vector(6, 4), { owner: 'player' });
 
-    actors.push(new Worker(this.game, new Vector(5, 0), { owner: 'player' }));
-    actors.push(new Worker(this.game, new Vector(6, 3), { owner: 'player' }));
+    utils.instances.addActor(Worker, new Vector(5, 0), { owner: 'player' });
+    utils.instances.addActor(Worker, new Vector(6, 3), { owner: 'player' });
 
-    actors.push(new Spearman(this.game, new Vector(7, 8), { owner: 'enemy' }));
-    actors.push(new Spearman(this.game, new Vector(5, 9), { owner: 'enemy' }));
+    utils.instances.addActor(Spearman, new Vector(7, 8), { owner: 'enemy' });
+    utils.instances.addActor(Spearman, new Vector(5, 9), { owner: 'enemy' });
+
+    utils.instances.addActor(Spearman, new Vector(9, 11), { owner: 'enemy' });
+    utils.instances.addActor(Spearman, new Vector(11, 11), { owner: 'enemy' });
 
     buildings.push(new MainBuilding(new Vector(1, 3), { owner: 'player' }));
   }
@@ -84,6 +88,8 @@ export class Player {
           selectedInstance.type === 'actor'
         ) {
           this.handleSelect(selected as ISelected<Actor>);
+        } else if (selectedInstance.owner === 'enemy') {
+          this.handleAttack(clickedCellPos);
         }
       } else {
         this.handleMove(clickedCellPos);
@@ -140,6 +146,23 @@ export class Player {
     }
   }
 
+  handleAttack(clickedCellPos: Vector): void {
+    const { selector } = this.game;
+    const currentEvent = this.event;
+
+    if (currentEvent && currentEvent.type === 'actorSelected') {
+      const options = currentEvent.options as IActorSelectedEventOptions;
+
+      if (
+        isCellInCells(clickedCellPos, options.availableBlockersCellsForAttack)
+      ) {
+        const selectedInstance = options.selected.instance;
+        const enemyInstance = selector.selected.instance as Actor;
+        this.attackActor(selectedInstance, enemyInstance);
+      }
+    }
+  }
+
   moveActor(instance: Actor, pos: Vector): void {
     instance.setPosition(pos);
     this.resetEvent();
@@ -159,8 +182,23 @@ export class Player {
         selected,
         availableCellsForMove,
         availableBlockersForAttack,
+        availableBlockersCellsForAttack: availableBlockersForAttack.map(
+          (e) => e.pos
+        ),
         blockers,
       },
     };
+  }
+
+  attackActor(selectedInstance: Actor, enemyInstance: Actor): void {
+    const { lan } = this.game;
+    console.log(selectedInstance, enemyInstance);
+
+    this.resetEvent();
+
+    lan.attackActor({
+      id: enemyInstance.options.id,
+      damage: 10
+    });
   }
 }

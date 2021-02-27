@@ -30,9 +30,9 @@ export class MainBuilding extends Building {
     const { $ctx, utils } = game;
     const { cellSize } = game.config.stage;
 
-    const cellOffset: Vector = utils.getDrawCellOffset(OPTIONS.size, cellSize);
+    const cellOffset: Vector = utils.draw.getCellOffset(OPTIONS.size, cellSize);
 
-    const pos = utils.getDrawVector(
+    const pos = utils.draw.getVector(
       new Vector(
         this.pos.x + 0.5 - cellOffset.x,
         this.pos.y + 0.85 - cellOffset.y

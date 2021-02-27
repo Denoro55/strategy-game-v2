@@ -1,16 +1,29 @@
 import { Vector } from 'components';
 import { Game } from 'core';
 import { IInstanceType, OwnerType } from 'instances/types';
-import { ActorNameType, IActorOptions, IActorImages } from './types';
-import { isCellInCells, getCellsRange, getValidatedCells } from 'helpers';
+import {
+  ActorNameType,
+  IActorOptions,
+  IActorImages,
+  IActorUpdateOptions,
+} from './types';
+import {
+  isCellInCells,
+  getCellsRange,
+  getValidatedCells,
+  getPercent,
+} from 'helpers';
 
 export abstract class Actor {
   game: Game;
 
+  abstract image: HTMLImageElement;
   abstract name: ActorNameType;
   abstract cellsForMoveRange: number;
   abstract viewRange: number;
   abstract attackRange: number;
+  abstract hp: number;
+  abstract maxHp: number;
 
   type: IInstanceType = 'actor';
   owner: OwnerType = 'player';
@@ -61,8 +74,71 @@ export abstract class Actor {
 
   getAvailableCellsForAttack(blockers: Actor[]): Actor[] {
     const currentRange = getCellsRange(this.pos, this.attackRange);
-    return blockers.filter(blocker => isCellInCells(blocker.pos, currentRange))
+    return blockers.filter(
+      (blocker) =>
+        isCellInCells(blocker.pos, currentRange) && blocker.owner === 'enemy'
+    );
   }
 
-  abstract draw(game: Game): void;
+  drawHealthbar(): void {
+    const {
+      $ctx,
+      utils,
+      config: {
+        stage: { cellSize },
+      },
+    } = this.game;
+
+    const startPos = utils.draw.getVector(
+      new Vector(this.pos.x + 0.25, this.pos.y - 0.25),
+      this.pos
+    );
+
+    $ctx.beginPath();
+    $ctx.fillStyle = this.owner === 'enemy' ? 'red' : 'green';
+    $ctx.strokeStyle = '#000';
+    $ctx.lineWidth = 2;
+    $ctx.rect(
+      ...startPos.spread(),
+      cellSize.x * getPercent(this.hp, this.maxHp, 0.5),
+      10
+    );
+    $ctx.fill();
+    $ctx.closePath();
+
+    $ctx.beginPath();
+    $ctx.rect(...startPos.spread(), cellSize.x * 0.5, 10);
+    $ctx.stroke();
+    $ctx.closePath();
+  }
+
+  update(options: IActorUpdateOptions): void {
+    const { utils } = this.game;
+
+    this.hp = options.hp;
+
+    if (this.hp <= 0) {
+      utils.instances.removeActorById(this.options.id);
+    }
+  }
+
+  draw(game: Game): void {
+    const { $ctx, utils } = game;
+    const { cellSize } = game.config.stage;
+    const config = this.getConfig();
+
+    const cellOffset: Vector = utils.draw.getCellOffset(config.size, cellSize);
+
+    const pos = utils.draw.getVector(
+      new Vector(
+        this.pos.x + 0.5 - cellOffset.x,
+        this.pos.y + 0.5 - cellOffset.y
+      ),
+      this.pos
+    );
+
+    $ctx.drawImage(this.image, pos.x, pos.y, config.size.x, config.size.y);
+
+    this.drawHealthbar();
+  }
 }
