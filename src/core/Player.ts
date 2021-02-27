@@ -1,7 +1,7 @@
 import { Vector } from 'components';
 import { Warrior, Spearman, Worker } from 'actors';
 import { MainBuilding } from 'buildings';
-import { Actor } from 'instances';
+import { Actor, Building } from 'instances';
 import { Game } from 'core';
 import { ISelected } from './Selector';
 import { getEmptyCells, isCellInCells, getCellsRange } from 'helpers';
@@ -9,8 +9,8 @@ import { getEmptyCells, isCellInCells, getCellsRange } from 'helpers';
 export interface IActorSelectedEventOptions {
   selected: ISelected<Actor>;
   availableCellsForMove: Vector[];
-  blockers: Actor[];
-  availableBlockersForAttack: Actor[];
+  blockers: (Actor | Building)[];
+  availableBlockersForAttack: (Actor | Building)[];
   availableBlockersCellsForAttack: Vector[];
 }
 
@@ -108,26 +108,33 @@ export class Player {
   }
 
   handleSelectActor(selected: ISelected<Actor>): void {
-    const { actors, utils } = this.game;
+    const { actors, buildings, utils } = this.game;
     const instance = selected.instance as Actor;
 
     if (instance.canTurn) {
+      const instances = [...actors, ...buildings];
+
       const turnCells = utils.getCellsOnlyOnStage(instance.getCellsForMove());
-      const { emptyCells, blockers } = getEmptyCells(turnCells, actors);
+      const { emptyCells, colliders } = getEmptyCells(turnCells, instances);
 
       const availableCellsForMove = instance.validateCellsForMove(
         emptyCells,
-        blockers
+        colliders
+      );
+
+      const { colliders: instancesForAttack } = getEmptyCells(
+        instance.getCellsForAttack(),
+        instances
       );
 
       const availableBlockersForAttack = instance.getAvailableCellsForAttack(
-        blockers
+        instancesForAttack
       );
 
       this.selectActor(
         selected,
         availableCellsForMove,
-        blockers,
+        colliders,
         availableBlockersForAttack
       );
     }
@@ -173,8 +180,8 @@ export class Player {
   selectActor(
     selected: ISelected<Actor>,
     availableCellsForMove: Vector[],
-    blockers: Actor[],
-    availableBlockersForAttack: Actor[]
+    blockers: (Actor | Building)[],
+    availableBlockersForAttack: (Actor | Building)[]
   ): void {
     this.event = {
       type: 'actorSelected',
@@ -192,13 +199,12 @@ export class Player {
 
   attackActor(selectedInstance: Actor, enemyInstance: Actor): void {
     const { lan } = this.game;
-    console.log(selectedInstance, enemyInstance);
 
     this.resetEvent();
 
     lan.attackActor({
       id: enemyInstance.options.id,
-      damage: 10
+      damage: 10,
     });
   }
 }

@@ -1,5 +1,6 @@
 import { Vector } from 'components';
 import { Game } from 'core';
+import { Building } from 'instances';
 import { IInstanceType, OwnerType } from 'instances/types';
 import {
   ActorNameType,
@@ -68,15 +69,27 @@ export abstract class Actor {
     return getCellsRange(this.pos, this.cellsForMoveRange);
   }
 
-  validateCellsForMove(cells: Vector[], blockers: Actor[]): Vector[] {
+  getCellsForAttack(): Vector[] {
+    return getCellsRange(this.pos, this.attackRange);
+  }
+
+  validateCellsForMove(
+    cells: Vector[],
+    blockers: (Actor | Building)[]
+  ): Vector[] {
     return getValidatedCells(this.pos, this.cellsForMoveRange, cells, blockers);
   }
 
-  getAvailableCellsForAttack(blockers: Actor[]): Actor[] {
+  getAvailableCellsForAttack(
+    blockers: (Actor | Building)[]
+  ): (Actor | Building)[] {
     const currentRange = getCellsRange(this.pos, this.attackRange);
+
     return blockers.filter(
       (blocker) =>
-        isCellInCells(blocker.pos, currentRange) && blocker.owner === 'enemy'
+        isCellInCells(blocker.pos, currentRange) &&
+        blocker.owner === 'enemy' &&
+        blocker.type === 'actor'
     );
   }
 

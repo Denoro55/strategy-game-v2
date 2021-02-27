@@ -1,27 +1,35 @@
 import { Vector } from 'components';
-import { Actor } from 'instances';
+import { Actor, Building } from 'instances';
 
 interface IEmptyCells {
   emptyCells: Vector[],
-  blockers: Actor[]
+  colliders: (Actor | Building)[]
 }
 
 export const getEmptyCells = (
   cells: Vector[],
-  colliders: Actor[]
+  colliders: (Actor | Building)[]
 ): IEmptyCells => {
   const emptyCells: Vector[] = [];
-  const blockers: Actor[] = [];
+  const blockers: (Actor | Building)[] = [];
 
   cells.forEach((cell) => {
     let isEmpty = true;
 
-    for (let i = 0; i < colliders.length; i++) {
+    let loop = true;
+    for (let i = 0; i < colliders.length && loop; i++) {
       const instance = colliders[i];
-      if (cell.x === instance.pos.x && cell.y === instance.pos.y) {
-        isEmpty = false;
-        blockers.push(instance);
-        break;
+
+      const positions = instance.getPositions();
+
+      for (let p = 0; p < positions.length; p++) {
+        const cellPos = positions[p];
+        if (cell.x === cellPos.x && cell.y === cellPos.y) {
+          isEmpty = false;
+          blockers.push(instance);
+          loop = false;
+          break;
+        }
       }
     }
 
@@ -32,6 +40,6 @@ export const getEmptyCells = (
 
   return {
     emptyCells,
-    blockers
+    colliders: blockers
   };
 };

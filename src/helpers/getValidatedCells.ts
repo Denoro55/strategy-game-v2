@@ -1,4 +1,4 @@
-import { Actor } from 'instances';
+import { Actor, Building } from 'instances';
 import { Vector } from 'components';
 import {
   getEvenXOffset,
@@ -13,12 +13,12 @@ export const getValidatedCells = (
   pos: Vector,
   size: number,
   cells: Vector[],
-  blockers: Actor[]
+  blockers: (Actor | Building)[]
 ): Vector[] => {
   let validatedCells = [...cells];
 
   blockers.forEach((blocker) => {
-    if (blocker.owner === 'player') return;
+    if (blocker.owner === 'player' || blocker.type === 'building') return;
 
     const blockerPos = new Vector(
       blocker.pos.x + 0.5 + getEvenXOffset(blocker.pos.y, 0.5, 0),
