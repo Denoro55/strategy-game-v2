@@ -34,28 +34,29 @@ export class Player {
   }
 
   updateViewRange(): void {
-    const { actors } = this.game;
+    const { actors, buildings } = this.game;
     this.viewRange = [];
 
-    [...actors].forEach((instance) => {
-      const viewCells = getCellsRange(instance.pos, instance.viewRange);
-      this.viewRange.push(...viewCells);
+    [...actors, ...buildings].forEach((instance) => {
+      if (instance.owner === 'enemy') return;
+
+      const positions = instance.getPositions();
+      positions.forEach(pos => {
+        const viewCells = getCellsRange(pos, instance.viewRange);
+        this.viewRange.push(...viewCells);
+      })
     });
   }
 
   initInstances(): void {
     const { buildings, utils } = this.game;
 
-    utils.instances.addActor(Warrior, new Vector(0, 0), { owner: 'player' });
-    utils.instances.addActor(Warrior, new Vector(3, 3), { owner: 'player' });
     utils.instances.addActor(Warrior, new Vector(1, 1), { owner: 'player' });
-    utils.instances.addActor(Warrior, new Vector(2, 3), { owner: 'player' });
+    utils.instances.addActor(Warrior, new Vector(3, 2), { owner: 'player' });
 
-    utils.instances.addActor(Spearman, new Vector(2, 1), { owner: 'player' });
     utils.instances.addActor(Spearman, new Vector(5, 2), { owner: 'player' });
-    utils.instances.addActor(Spearman, new Vector(6, 4), { owner: 'player' });
+    utils.instances.addActor(Spearman, new Vector(4, 4), { owner: 'player' });
 
-    utils.instances.addActor(Worker, new Vector(5, 0), { owner: 'player' });
     utils.instances.addActor(Worker, new Vector(6, 3), { owner: 'player' });
 
     utils.instances.addActor(Spearman, new Vector(7, 8), { owner: 'enemy' });

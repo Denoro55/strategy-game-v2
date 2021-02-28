@@ -10,6 +10,7 @@ const OPTIONS = {
 
 export class MainBuilding extends Building {
   image: HTMLImageElement;
+  viewRange = 4;
 
   constructor(position: Vector, options: IBuildingOptions) {
     super(position, options);

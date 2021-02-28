@@ -11,8 +11,8 @@ export class LanPlayerImitator {
   }
 
   imitateResponse(
-    event: IActionType<IAttackEventOptions>
-  ): IActionType<IAttackEventResponse> {
+    event: IActionType<any>
+  ): IActionType<any> {
     switch (event.type) {
       case EventType.attackActor: {
         return this.attackActor(event);

@@ -244,9 +244,13 @@ export class Drawer {
   }
 
   drawActors(): void {
-    const { actors } = this.game;
+    const { actors, player } = this.game;
 
     actors.forEach((actor) => {
+      if (actor.owner === 'enemy' && !isCellInCells(actor.pos, player.viewRange)) {
+        return;
+      }
+
       actor.draw(this.game);
     });
   }

@@ -10,6 +10,8 @@ export abstract class Building {
   type: IInstanceType = 'building';
   owner: OwnerType = 'player';
 
+  abstract viewRange: number;
+
   constructor(position: Vector, options: IBuildingOptions) {
     this.pos = position;
     this.options = options;
