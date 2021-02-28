@@ -12,7 +12,9 @@ export interface IActorOptions {
 }
 
 export interface IActorUpdateOptions {
-  hp: number
+  hp?: number;
+  canAttack?: boolean;
+  canTurn?: boolean;
 }
 
 export interface IActorImages {

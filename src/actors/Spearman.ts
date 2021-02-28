@@ -13,6 +13,7 @@ export class Spearman extends Actor {
   attackRange = 2;
   maxHp = 100;
   hp = this.maxHp;
+  damage = 15;
 
   constructor(game: Game, pos: Vector, options: IActorOptions) {
     super(game, pos, options);

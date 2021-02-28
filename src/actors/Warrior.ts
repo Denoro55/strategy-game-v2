@@ -12,6 +12,7 @@ export class Warrior extends Actor {
   attackRange = 1;
   maxHp = 100;
   hp = this.maxHp;
+  damage = 10;
 
   constructor(game: Game, pos: Vector, options: IActorOptions) {
     super(game, pos, options);

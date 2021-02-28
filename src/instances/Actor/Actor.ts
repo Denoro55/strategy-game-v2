@@ -15,6 +15,8 @@ import {
   getPercent,
 } from 'helpers';
 
+const HEALTHBAR_HEIGHT = 7;
+
 export abstract class Actor {
   game: Game;
 
@@ -25,6 +27,7 @@ export abstract class Actor {
   abstract attackRange: number;
   abstract hp: number;
   abstract maxHp: number;
+  abstract damage: number;
 
   type: IInstanceType = 'actor';
   owner: OwnerType = 'player';
@@ -32,6 +35,7 @@ export abstract class Actor {
   pos: Vector;
   options: IActorOptions;
   canTurn = true;
+  canAttack = true;
 
   constructor(game: Game, position: Vector, options: IActorOptions) {
     this.pos = position;
@@ -61,8 +65,9 @@ export abstract class Actor {
     return [new Vector(this.pos.x, this.pos.y)];
   }
 
-  endTurn(): void {
-    this.canTurn = false;
+  newTurn(): void {
+    this.canTurn = true;
+    this.canAttack = true;
   }
 
   getCellsForMove(): Vector[] {
@@ -103,7 +108,7 @@ export abstract class Actor {
     } = this.game;
 
     const startPos = utils.draw.getVector(
-      new Vector(this.pos.x + 0.25, this.pos.y - 0.25),
+      new Vector(this.pos.x + 0.25, this.pos.y - 0.15),
       this.pos
     );
 
@@ -114,13 +119,13 @@ export abstract class Actor {
     $ctx.rect(
       ...startPos.spread(),
       cellSize.x * getPercent(this.hp, this.maxHp, 0.5),
-      10
+      HEALTHBAR_HEIGHT
     );
     $ctx.fill();
     $ctx.closePath();
 
     $ctx.beginPath();
-    $ctx.rect(...startPos.spread(), cellSize.x * 0.5, 10);
+    $ctx.rect(...startPos.spread(), cellSize.x * 0.5, HEALTHBAR_HEIGHT);
     $ctx.stroke();
     $ctx.closePath();
   }
@@ -128,7 +133,17 @@ export abstract class Actor {
   update(options: IActorUpdateOptions): void {
     const { utils } = this.game;
 
-    this.hp = options.hp;
+    if (options.hp !== undefined) {
+      this.hp = options.hp;
+    }
+
+    if (options.canAttack !== undefined) {
+      this.canAttack = options.canAttack;
+    }
+
+    if (options.canTurn !== undefined) {
+      this.canTurn = options.canTurn;
+    }
 
     if (this.hp <= 0) {
       utils.instances.removeActorById(this.options.id);

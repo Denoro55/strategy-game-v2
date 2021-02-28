@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash';
 import { Vector } from 'components';
 import { Warrior, Spearman, Worker } from 'actors';
 import { MainBuilding } from 'buildings';
@@ -29,7 +30,7 @@ export class Player {
   }
 
   init(): void {
-    this.initInstances();
+    this.spawnBase(new Vector(3, 2));
     this.updateViewRange();
   }
 
@@ -41,31 +42,81 @@ export class Player {
       if (instance.owner === 'enemy') return;
 
       const positions = instance.getPositions();
-      positions.forEach(pos => {
+      positions.forEach((pos) => {
         const viewCells = getCellsRange(pos, instance.viewRange);
         this.viewRange.push(...viewCells);
-      })
+      });
+    });
+
+    this.viewRange = uniqBy(this.viewRange, (v) => [v.x, v.y].join());
+  }
+
+  refreshTurn(): void {
+    const { actors } = this.game;
+
+    actors.forEach((instance) => {
+      instance.newTurn();
     });
   }
 
-  initInstances(): void {
+  spawnBase(basePos: Vector): void {
+    const { utils } = this.game;
+
+    this.initInstances(basePos);
+
+    utils.instances.addActor(
+      Spearman,
+      new Vector(2, 11),
+      { owner: 'enemy' }
+    );
+
+    utils.instances.addActor(
+      Spearman,
+      new Vector(13, 3),
+      { owner: 'enemy' }
+    );
+
+    utils.instances.addActor(
+      Spearman,
+      new Vector(12, 11),
+      { owner: 'enemy' }
+    );
+
+    utils.instances.addActor(
+      Spearman,
+      new Vector(11, 9),
+      { owner: 'enemy' }
+    );
+  }
+
+  initInstances(basePos: Vector): void {
     const { buildings, utils } = this.game;
 
-    utils.instances.addActor(Warrior, new Vector(1, 1), { owner: 'player' });
-    utils.instances.addActor(Warrior, new Vector(3, 2), { owner: 'player' });
+    buildings.push(new MainBuilding(basePos, { owner: 'player' }));
 
-    utils.instances.addActor(Spearman, new Vector(5, 2), { owner: 'player' });
-    utils.instances.addActor(Spearman, new Vector(4, 4), { owner: 'player' });
+    utils.instances.addActor(Worker, new Vector(basePos.x, basePos.y + 2), {
+      owner: 'player',
+    });
 
-    utils.instances.addActor(Worker, new Vector(6, 3), { owner: 'player' });
+    utils.instances.addActor(
+      Warrior,
+      new Vector(basePos.x - 1, basePos.y + 2),
+      { owner: 'player' }
+    );
 
-    utils.instances.addActor(Spearman, new Vector(7, 8), { owner: 'enemy' });
-    utils.instances.addActor(Spearman, new Vector(5, 9), { owner: 'enemy' });
+    utils.instances.addActor(
+      Warrior,
+      new Vector(basePos.x + 1, basePos.y + 2),
+      { owner: 'player' }
+    );
 
-    utils.instances.addActor(Spearman, new Vector(9, 11), { owner: 'enemy' });
-    utils.instances.addActor(Spearman, new Vector(11, 11), { owner: 'enemy' });
+    utils.instances.addActor(Spearman, new Vector(basePos.x - 1, basePos.y), {
+      owner: 'player',
+    });
 
-    buildings.push(new MainBuilding(new Vector(1, 3), { owner: 'player' }));
+    utils.instances.addActor(Spearman, new Vector(basePos.x + 1, basePos.y), {
+      owner: 'player',
+    });
   }
 
   resetEvent(): void {
@@ -112,33 +163,31 @@ export class Player {
     const { actors, buildings, utils } = this.game;
     const instance = selected.instance as Actor;
 
-    if (instance.canTurn) {
-      const instances = [...actors, ...buildings];
+    const instances = [...actors, ...buildings];
 
-      const turnCells = utils.getCellsOnlyOnStage(instance.getCellsForMove());
-      const { emptyCells, colliders } = getEmptyCells(turnCells, instances);
+    const turnCells = instance.canTurn ? utils.getCellsOnlyOnStage(instance.getCellsForMove()) : [];
+    const { emptyCells, colliders } = getEmptyCells(turnCells, instances);
 
-      const availableCellsForMove = instance.validateCellsForMove(
-        emptyCells,
-        colliders
-      );
+    const availableCellsForMove = instance.validateCellsForMove(
+      emptyCells,
+      colliders
+    );
 
-      const { colliders: instancesForAttack } = getEmptyCells(
-        instance.getCellsForAttack(),
-        instances
-      );
+    const { colliders: instancesForAttack } = instance.canAttack ? getEmptyCells(
+      instance.getCellsForAttack(),
+      instances
+    ) : { colliders: [] };
 
-      const availableBlockersForAttack = instance.getAvailableCellsForAttack(
-        instancesForAttack
-      );
+    const availableBlockersForAttack = instance.getAvailableCellsForAttack(
+      instancesForAttack
+    );
 
-      this.selectActor(
-        selected,
-        availableCellsForMove,
-        colliders,
-        availableBlockersForAttack
-      );
-    }
+    this.selectActor(
+      selected,
+      availableCellsForMove,
+      colliders,
+      availableBlockersForAttack
+    );
   }
 
   handleMove(clickedCellPos: Vector): void {
@@ -175,7 +224,9 @@ export class Player {
     instance.setPosition(pos);
     this.resetEvent();
     this.updateViewRange();
-    // selectedInstance.endTurn();
+    instance.update({
+      canTurn: false,
+    });
   }
 
   selectActor(
@@ -201,11 +252,17 @@ export class Player {
   attackActor(selectedInstance: Actor, enemyInstance: Actor): void {
     const { lan } = this.game;
 
+    console.log(selectedInstance.damage, enemyInstance)
+
     this.resetEvent();
+
+    selectedInstance.update({
+      canAttack: false
+    })
 
     lan.attackActor({
       id: enemyInstance.options.id,
-      damage: 10,
+      damage: selectedInstance.damage,
     });
   }
 }

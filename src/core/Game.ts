@@ -9,6 +9,9 @@ import {
 } from 'core';
 import { Vector } from 'components';
 import { Actor, Building } from 'instances';
+import { logger } from 'helpers';
+
+const timeLogger = logger();
 
 interface IGameOptions {
   log: boolean;
@@ -104,8 +107,15 @@ export class Game {
   }
 
   handleKeyDown(event: KeyboardEvent): void {
+    const { player } = this;
+
+
     if (event.key === 'i') {
       console.log(this);
+    }
+
+    if (event.key === 'r') {
+      player.refreshTurn();
     }
   }
 
@@ -117,7 +127,7 @@ export class Game {
 
       this.drawer.draw();
 
-      log && console.log('Время выполнения: ', performance.now() - time);
+      log && timeLogger('Время выполнения: ' + (performance.now() - time));
 
       window.requestAnimationFrame(loop);
     };

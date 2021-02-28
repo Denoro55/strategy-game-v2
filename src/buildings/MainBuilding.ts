@@ -5,7 +5,7 @@ import { Game } from 'core';
 import spriteUrl from 'assets/images/buildings/main.png';
 
 const OPTIONS = {
-  size: new Vector(145, 145),
+  size: new Vector(130, 130),
 };
 
 export class MainBuilding extends Building {
@@ -20,11 +20,13 @@ export class MainBuilding extends Building {
   setPosition(): void {
     const { pos } = this;
 
+    const dir = this.pos.y % 2 !== 0 ? 1 : -1;
+
     this.posArray = [
       new Vector(pos.x, pos.y),
       new Vector(pos.x, pos.y + 1),
-      new Vector(pos.x + 1, pos.y + 1),
-    ];
+      new Vector(pos.x + dir, pos.y + 1),
+    ]
   }
 
   draw(game: Game): void {

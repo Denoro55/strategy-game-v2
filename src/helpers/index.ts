@@ -11,3 +11,4 @@ export { getCellsRange } from './getCellsRange';
 export { getValidatedCells } from './getValidatedCells';
 export { getRandomValue } from './getRandomValue';
 export { getPercent } from './getPercent';
+export { logger } from './logger';

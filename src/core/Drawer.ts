@@ -122,7 +122,11 @@ export class Drawer {
         return;
         color = colors.enemy;
       } else if (actor.owner === 'player') {
-        color = actor.canTurn ? colors.canTurn : colors.cannotTurn;
+        if (!actor.canTurn && !actor.canAttack) {
+          color = colors.cannotTurnAndAttack;
+        } else {
+          color = !actor.canTurn || !actor.canAttack ? colors.cannotTurn : colors.canTurn;
+        }
       }
 
       this.drawHexon(actor.pos.x, actor.pos.y, {
