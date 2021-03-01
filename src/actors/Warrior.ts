@@ -3,6 +3,7 @@ import { Actor } from 'instances';
 import { ActorNameType, IActorOptions } from 'instances/Actor/types';
 import { Game } from 'core';
 import spriteUrl from 'assets/images/actors/warrior.png';
+import spriteEnemyUrl from 'assets/images/actors/warrior-enemy.png';
 
 export class Warrior extends Actor {
   image: HTMLImageElement;
@@ -18,7 +19,7 @@ export class Warrior extends Actor {
     super(game, pos, options);
     this.image = this.getImage({
       player: spriteUrl,
-      enemy: spriteUrl,
+      enemy: spriteEnemyUrl,
     });
   }
 }

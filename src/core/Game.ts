@@ -1,10 +1,12 @@
 import { CONFIG } from 'constants/config';
+import { IGameInitOptions } from 'core/Menu/types';
 import {
   Drawer,
   EventListener,
   Utils,
   Selector,
   Player,
+  Enemy,
   Lan,
 } from 'core';
 import { Vector } from 'components';
@@ -15,6 +17,7 @@ const timeLogger = logger();
 
 interface IGameOptions {
   log: boolean;
+  lan: IGameInitOptions
 }
 
 export class Game {
@@ -30,6 +33,7 @@ export class Game {
   utils: Utils;
   selector: Selector;
   player: Player;
+  enemy: Enemy;
   lan: Lan;
 
   viewOffset: Vector = new Vector(0, 0); // сдвиг экрана (не в px)
@@ -60,6 +64,7 @@ export class Game {
     this.utils = new Utils(this);
     this.selector = new Selector(this);
     this.player = new Player(this);
+    this.enemy = new Enemy(this);
     this.lan = new Lan(this);
 
     this.eventListener = new EventListener(this, {
@@ -85,6 +90,7 @@ export class Game {
 
   init(): void {
     this.player.init();
+    this.enemy.init();
     this.render();
   }
 

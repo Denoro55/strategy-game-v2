@@ -1,11 +1,9 @@
-import { uniqBy } from 'lodash';
 import { Vector } from 'components';
-import { Warrior, Spearman, Worker } from 'actors';
-import { MainBuilding } from 'buildings';
+import { uniqBy } from 'lodash';
 import { Actor, Building } from 'instances';
 import { Game } from 'core';
-import { ISelected } from './Selector';
 import { getEmptyCells, isCellInCells, getCellsRange } from 'helpers';
+import { ISelected } from './Selector';
 
 export interface IActorSelectedEventOptions {
   selected: ISelected<Actor>;
@@ -30,7 +28,10 @@ export class Player {
   }
 
   init(): void {
-    this.spawnBase(new Vector(3, 2));
+    const { options } = this.game;
+    const basePos = options.lan.player.startPosition;
+
+    this.spawnBase(basePos);
     this.updateViewRange();
   }
 
@@ -62,61 +63,7 @@ export class Player {
   spawnBase(basePos: Vector): void {
     const { utils } = this.game;
 
-    this.initInstances(basePos);
-
-    utils.instances.addActor(
-      Spearman,
-      new Vector(2, 11),
-      { owner: 'enemy' }
-    );
-
-    utils.instances.addActor(
-      Spearman,
-      new Vector(13, 3),
-      { owner: 'enemy' }
-    );
-
-    utils.instances.addActor(
-      Spearman,
-      new Vector(12, 11),
-      { owner: 'enemy' }
-    );
-
-    utils.instances.addActor(
-      Spearman,
-      new Vector(11, 9),
-      { owner: 'enemy' }
-    );
-  }
-
-  initInstances(basePos: Vector): void {
-    const { buildings, utils } = this.game;
-
-    buildings.push(new MainBuilding(basePos, { owner: 'player' }));
-
-    utils.instances.addActor(Worker, new Vector(basePos.x, basePos.y + 2), {
-      owner: 'player',
-    });
-
-    utils.instances.addActor(
-      Warrior,
-      new Vector(basePos.x - 1, basePos.y + 2),
-      { owner: 'player' }
-    );
-
-    utils.instances.addActor(
-      Warrior,
-      new Vector(basePos.x + 1, basePos.y + 2),
-      { owner: 'player' }
-    );
-
-    utils.instances.addActor(Spearman, new Vector(basePos.x - 1, basePos.y), {
-      owner: 'player',
-    });
-
-    utils.instances.addActor(Spearman, new Vector(basePos.x + 1, basePos.y), {
-      owner: 'player',
-    });
+    utils.instances.spawnBase(basePos, 'player');
   }
 
   resetEvent(): void {

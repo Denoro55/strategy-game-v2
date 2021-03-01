@@ -3,6 +3,7 @@ import { Building } from 'instances';
 import { IBuildingOptions } from 'instances/Building/types';
 import { Game } from 'core';
 import spriteUrl from 'assets/images/buildings/main.png';
+import spriteEnemyUrl from 'assets/images/buildings/main-enemy.png';
 
 const OPTIONS = {
   size: new Vector(130, 130),
@@ -14,7 +15,10 @@ export class MainBuilding extends Building {
 
   constructor(position: Vector, options: IBuildingOptions) {
     super(position, options);
-    this.image = this.getImage(spriteUrl);
+    this.image = this.getImage({
+      player: spriteUrl,
+      enemy: spriteEnemyUrl
+    });
   }
 
   setPosition(): void {

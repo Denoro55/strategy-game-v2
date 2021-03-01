@@ -1,7 +1,7 @@
 import { Vector } from 'components';
 import { Game } from 'core';
 import { IInstanceType, OwnerType } from 'instances/types';
-import { IBuildingOptions } from './types';
+import { IBuildingOptions, IBuildingImages } from './types';
 
 export abstract class Building {
   pos: Vector;
@@ -23,9 +23,9 @@ export abstract class Building {
     return this.posArray;
   }
 
-  getImage(url: string): HTMLImageElement {
+  getImage(images: IBuildingImages): HTMLImageElement {
     const image = new Image();
-    image.src = url;
+    image.src = this.options.owner === 'player' ? images.player : images.enemy;
 
     return image;
   }

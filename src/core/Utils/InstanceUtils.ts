@@ -1,8 +1,11 @@
 import { Game } from 'core';
-import { Actor } from 'instances';
-import { IActorOptions, IActorConstructor } from 'instances/Actor/types';
 import { Vector } from 'components';
+import { Warrior, Spearman, Worker } from 'actors';
+import { MainBuilding } from 'buildings';
+import { IActorOptions, IActorConstructor } from 'instances/Actor/types';
 import { getRandomValue } from 'helpers';
+import { Actor } from 'instances';
+import { OwnerType } from 'instances/types';
 
 export class InstanceUtils {
   game: Game;
@@ -10,6 +13,36 @@ export class InstanceUtils {
   constructor(game: Game) {
     this.game = game;
   }
+
+  spawnBase = (basePos: Vector, owner: OwnerType): void => {
+    const { buildings } = this.game;
+
+    buildings.push(new MainBuilding(basePos, { owner }));
+
+    this.addActor(Worker, new Vector(basePos.x, basePos.y + 2), {
+      owner,
+    });
+
+    this.addActor(
+      Warrior,
+      new Vector(basePos.x - 1, basePos.y + 2),
+      { owner }
+    );
+
+    this.addActor(
+      Warrior,
+      new Vector(basePos.x + 1, basePos.y + 2),
+      { owner }
+    );
+
+    this.addActor(Spearman, new Vector(basePos.x - 1, basePos.y), {
+      owner,
+    });
+
+    this.addActor(Spearman, new Vector(basePos.x + 1, basePos.y), {
+      owner,
+    });
+  };
 
   addActor(
     ActorInstance: IActorConstructor,

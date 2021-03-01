@@ -1,10 +1,5 @@
 import 'assets/styles/index.scss';
 
-import { Game } from 'core';
-import { CONFIG } from 'constants/config';
+import { Menu } from './core/Menu';
 
-const LOGS = true;
-
-new Game('#app', CONFIG, {
-  log: process.env.NODE_ENV !== 'development' ? false : LOGS,
-});
+new Menu();

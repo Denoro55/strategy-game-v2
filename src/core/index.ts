@@ -1,8 +1,10 @@
+export { Menu } from './Menu';
 export { Game } from './Game';
 export { Drawer } from './Drawer';
 export { Utils, InstanceUtils, DrawUtils } from './Utils';
 export { Selector } from './Selector';
 export { Player } from './Player';
+export { Enemy } from './Enemy';
 export { EventListener } from './EventListener';
 export { EventEmitter } from './EventEmitter';
 export { Lan, LanPlayerImitator } from './Lan';
