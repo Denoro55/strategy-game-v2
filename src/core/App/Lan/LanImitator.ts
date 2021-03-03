@@ -1,7 +1,12 @@
 import { App } from 'core';
 import { Vector } from 'components';
 
-import { ISocketAction, IProfileInfoResponse, IAttackResponse, IStartGameResponse } from './types';
+import {
+  ISocketAction,
+  IProfileInfoResponse,
+  IAttackResponse,
+  IStartGameResponse,
+} from './types';
 import { SocketActions, SocketListeners } from './enums';
 
 export class LanImitator {
@@ -17,8 +22,8 @@ export class LanImitator {
         return this.profileGetInfo();
       }
 
-      case SocketActions.attackActor: {
-        return this.attackActor(event);
+      case SocketActions.attackInstance: {
+        return this.attackInstance(event);
       }
 
       case SocketActions.startGame: {
@@ -37,15 +42,15 @@ export class LanImitator {
       payload: {
         players: {
           1: {
-            startPosition: new Vector(3, 3)
+            startPosition: new Vector(3, 3),
           },
           2: {
-            startPosition: new Vector(8, 6)
+            startPosition: new Vector(8, 6),
           },
           3: {
-            startPosition: new Vector(3, 8)
-          }
-        }
+            startPosition: new Vector(3, 8),
+          },
+        },
       },
     };
   }
@@ -62,14 +67,14 @@ export class LanImitator {
     };
   }
 
-  attackActor(event: ISocketAction): ISocketAction<IAttackResponse> {
+  attackInstance(event: ISocketAction): ISocketAction<IAttackResponse> {
     const { utils } = this.app.game;
     const { id, damage } = event.payload;
     let nextHp = 0;
 
-    const actor = utils.instances.getActorById(id);
-    if (actor) {
-      nextHp = actor.hp - damage;
+    const instance = utils.instances.getInstanceById(id);
+    if (instance) {
+      nextHp = instance.hp - damage;
     }
 
     return {

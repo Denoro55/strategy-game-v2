@@ -27,13 +27,13 @@ export class Lan {
     const { utils } = game;
 
     this.subscribe(
-      SocketListeners.attackActor,
+      SocketListeners.attackInstance,
       (data: IAttackResponse) => {
         const { hp, id } = data;
 
-        const actor = utils.instances.getActorById(id);
-        if (actor) {
-          actor.update({
+        const instance = utils.instances.getInstanceById(id);
+        if (instance) {
+          instance.update({
             hp,
           });
         }
@@ -62,8 +62,8 @@ export class Lan {
     );
   }
 
-  attackActor(options: IAttackEvent): void {
-    this.emit<IAttackEvent>(SocketActions.attackActor, options);
+  attackInstance(options: IAttackEvent): void {
+    this.emit<IAttackEvent>(SocketActions.attackInstance, options);
   }
 
   startGame(client: IClient): void {

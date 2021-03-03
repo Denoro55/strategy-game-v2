@@ -90,12 +90,13 @@ export abstract class Actor {
   ): (Actor | Building)[] {
     const currentRange = getCellsRange(this.pos, this.attackRange);
 
-    return blockers.filter(
-      (blocker) =>
-        isCellInCells(blocker.pos, currentRange) &&
-        blocker.owner === 'enemy' &&
-        blocker.type === 'actor'
-    );
+    return blockers.filter((blocker) => {
+      const positions = blocker.getPositions();
+
+      return positions.some(
+        (pos) => isCellInCells(pos, currentRange) && blocker.owner === 'enemy'
+      );
+    });
   }
 
   drawHealthbar(): void {
@@ -146,7 +147,7 @@ export abstract class Actor {
     }
 
     if (this.hp <= 0) {
-      utils.instances.removeActorById(this.options.id);
+      utils.instances.removeInstanceById(this.options.id);
     }
   }
 

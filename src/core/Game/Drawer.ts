@@ -196,13 +196,11 @@ export class Drawer {
       });
 
       // позиции врагов
-      eventOptions.availableBlockersForAttack.forEach((blocker) => {
-        if (blocker.owner === 'enemy' && blocker.type === 'actor') {
-          this.drawHexon(blocker.pos.x, blocker.pos.y, {
-            color: colors.enemy,
-            alpha: 0.8,
-          });
-        }
+      eventOptions.availableBlockersCellsForAttack.forEach((pos) => {
+        this.drawHexon(pos.x, pos.y, {
+          color: colors.enemy,
+          alpha: 0.8,
+        });
       });
     }
   }
