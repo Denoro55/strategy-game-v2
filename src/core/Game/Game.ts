@@ -1,5 +1,5 @@
 import { Drawer, Utils, Selector, Player, App } from 'core';
-import { IStartGameResponse } from 'core/Lan/types';
+import { IStartGameResponse } from 'core/App/Lan/types';
 import { CONFIG } from 'constants/config';
 import { Vector } from 'components';
 import { Actor, Building } from 'instances';

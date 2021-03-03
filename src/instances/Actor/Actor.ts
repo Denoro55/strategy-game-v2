@@ -1,5 +1,5 @@
-import { Vector } from 'components';
 import { Game } from 'core';
+import { Vector } from 'components';
 import { Building } from 'instances';
 import { IInstanceType, OwnerType } from 'instances/types';
 import {

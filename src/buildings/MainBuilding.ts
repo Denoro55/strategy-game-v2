@@ -1,7 +1,7 @@
+import { Game } from 'core';
 import { Vector } from 'components';
 import { Building } from 'instances';
 import { IBuildingOptions } from 'instances/Building/types';
-import { Game } from 'core';
 import spriteUrl from 'assets/images/buildings/main.png';
 import spriteEnemyUrl from 'assets/images/buildings/main-enemy.png';
 

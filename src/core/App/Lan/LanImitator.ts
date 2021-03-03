@@ -1,5 +1,5 @@
-import { Vector } from 'components';
 import { App } from 'core';
+import { Vector } from 'components';
 
 import { ISocketAction, IProfileInfoResponse, IAttackResponse, IStartGameResponse } from './types';
 import { SocketActions, SocketListeners } from './enums';

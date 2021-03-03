@@ -1,6 +1,6 @@
-import { uniqBy } from 'lodash';
+import uniqBy from 'lodash.uniqby';
 import { Game } from 'core';
-import { IStartGameResponse, IPlayerGameInfo } from 'core/Lan/types';
+import { IStartGameResponse, IPlayerGameInfo } from 'core/App/Lan/types';
 import { Vector } from 'components';
 import { Actor, Building } from 'instances';
 import { OwnerType } from 'instances/types';

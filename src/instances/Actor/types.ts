@@ -1,7 +1,7 @@
+import { Game } from 'core';
 import { Actor } from 'instances';
 import { OwnerType } from 'instances/types';
 import { Vector } from 'components';
-import { Game } from 'core';
 
 export type ActorNameType = 'warrior' | 'spearman' | 'worker';
 export type MoveVariantType = '1' | '2';

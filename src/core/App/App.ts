@@ -1,5 +1,5 @@
 import { Game, Lan, EventListener } from 'core';
-import { IProfileInfoResponse, IStartGameResponse } from 'core/Lan/types';
+import { IProfileInfoResponse, IStartGameResponse } from 'core/App/Lan/types';
 import { CONFIG } from 'constants/config';
 
 import { IAppOptions } from './types';
