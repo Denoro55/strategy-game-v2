@@ -21,16 +21,16 @@ module.exports = {
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          "style-loader",
+          'style-loader',
           // Translates CSS into CommonJS
-          "css-loader",
+          'css-loader',
           // Compiles Sass to CSS
-          "sass-loader",
+          'sass-loader',
         ],
       },
       {
         test: /\.(jpg|jpeg|png|svg|gif)$/,
-        use: ['file-loader']
+        use: ['file-loader'],
       },
     ],
   },
@@ -40,12 +40,12 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env || 'development')
+      'process.env': JSON.stringify(process.env || 'development'),
     }),
     new htmlWebpackPlugin({
       title: 'Strategy Game',
       template: './src/assets/index.html',
     }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
   ],
 };

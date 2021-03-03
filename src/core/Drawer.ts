@@ -1,9 +1,9 @@
-import { CONFIG } from 'constants/config';
-import { IActorSelectedEventOptions } from './Player';
-import { Vector } from 'components';
 import { Game } from 'core';
+import { CONFIG } from 'constants/config';
+import { Vector } from 'components';
 import { createHexon, isCellInCells } from 'helpers';
-import { EventEmitter, IActionType } from './EventEmitter';
+
+import { IActorSelectedEventOptions } from './Player';
 
 interface IHexonOptions {
   color: string;

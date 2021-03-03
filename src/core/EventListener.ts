@@ -1,26 +1,16 @@
+import { App } from 'core';
 import { Vector } from 'components';
-import { Game } from 'core';
-
-interface IScrollerOptions {
-  onScroll: (offset: Vector) => void;
-  onMouseMove: (offset: Vector) => void;
-  onMouseDown: (offset: Vector) => void;
-  onKeyDown: (event: KeyboardEvent) => void;
-  onMouseClick: (event: Vector) => void;
-}
 
 export class EventListener {
-  game: Game;
+  app: App;
   $canvas: HTMLCanvasElement;
   isDragging: boolean;
-  options: IScrollerOptions;
   startPos: Vector;
   startOffset: Vector;
 
-  constructor(game: Game, options: IScrollerOptions) {
-    this.game = game;
-    this.$canvas = game.$canvas;
-    this.options = options;
+  constructor(app: App) {
+    this.app = app;
+    this.$canvas = app.game.$canvas;
 
     this.startPos = new Vector(0, 0);
     this.startOffset = new Vector(0, 0);
@@ -42,17 +32,18 @@ export class EventListener {
     );
 
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
+
+    document.addEventListener('contextmenu', (event) => event.preventDefault());
   }
 
   handleMouseDown(event: MouseEvent): void {
+    const { game } = this.app;
+
     const {
       viewOffset,
       utils: { convertPosition },
-    } = this.game;
-    const { onMouseDown } = this.options;
+    } = game;
     const offsetPxPosition = convertPosition(viewOffset, true);
-
-    onMouseDown(new Vector(event.offsetX, event.offsetY));
 
     this.isDragging = true;
     this.startPos = new Vector(
@@ -63,8 +54,8 @@ export class EventListener {
   }
 
   handleMouseUp(event: MouseEvent): void {
-    const { onMouseClick } = this.options;
-    const { viewOffset } = this.game;
+    const { game } = this.app;
+    const { viewOffset } = game;
 
     this.isDragging = false;
 
@@ -74,19 +65,19 @@ export class EventListener {
       Math.abs(viewOffset.x - this.startOffset.x) < range &&
       Math.abs(viewOffset.x - this.startOffset.x) < range
     ) {
-      onMouseClick(new Vector(event.offsetX, event.offsetY));
+      game.handleMouseClick(new Vector(event.offsetX, event.offsetY));
     }
   }
 
   handleMouseMove(event: MouseEvent): void {
-    const { onScroll, onMouseMove } = this.options;
+    const { game } = this.app;
 
     const mousePos = new Vector(event.offsetX, event.offsetY);
 
-    onMouseMove(mousePos);
+    game.handleMouseMove(mousePos);
 
     if (this.isDragging) {
-      onScroll(this.startPos.diff(mousePos));
+      game.handleViewScroll(this.startPos.diff(mousePos));
     }
   }
 
@@ -95,8 +86,12 @@ export class EventListener {
   }
 
   handleKeyDown(event: KeyboardEvent): void {
-    const { onKeyDown } = this.options;
+    const { game, lan } = this.app;
 
-    onKeyDown(event);
+    if (event.key === 's') {
+      this.app.profileInfo && lan.startGame(this.app.client);
+    }
+
+    game.handleKeyDown(event);
   }
 }

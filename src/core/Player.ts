@@ -1,8 +1,11 @@
-import { Vector } from 'components';
 import { uniqBy } from 'lodash';
-import { Actor, Building } from 'instances';
 import { Game } from 'core';
+import { IStartGameResponse, IPlayerGameInfo } from 'core/Lan/types';
+import { Vector } from 'components';
+import { Actor, Building } from 'instances';
+import { OwnerType } from 'instances/types';
 import { getEmptyCells, isCellInCells, getCellsRange } from 'helpers';
+
 import { ISelected } from './Selector';
 
 export interface IActorSelectedEventOptions {
@@ -22,16 +25,24 @@ export class Player {
   game: Game;
   viewRange: Vector[] = [];
   event: IActorSelectedEvent | null = null;
+  otherPlayers: Record<string, IPlayerGameInfo> = {}
 
   constructor(game: Game) {
     this.game = game;
   }
 
-  init(): void {
-    const { options } = this.game;
-    const basePos = options.lan.player.startPosition;
+  init(options: IStartGameResponse): void {
+    const players = options.players;
 
-    this.spawnBase(basePos);
+    Object.entries(players).forEach(([id, playerOptions]) => {
+      if (+id === this.game.app.client.id) {
+        this.spawnBase(playerOptions.startPosition, 'player');
+      } else {
+        this.spawnBase(playerOptions.startPosition, 'enemy');
+        this.otherPlayers[id] = playerOptions;
+      }
+    })
+
     this.updateViewRange();
   }
 
@@ -55,15 +66,17 @@ export class Player {
   refreshTurn(): void {
     const { actors } = this.game;
 
+    this.event = null;
+
     actors.forEach((instance) => {
       instance.newTurn();
     });
   }
 
-  spawnBase(basePos: Vector): void {
+  spawnBase(basePos: Vector, owner: OwnerType): void {
     const { utils } = this.game;
 
-    utils.instances.spawnBase(basePos, 'player');
+    utils.instances.spawnBase(basePos, owner);
   }
 
   resetEvent(): void {
@@ -146,6 +159,8 @@ export class Player {
       if (isCellInCells(clickedCellPos, options.availableCellsForMove)) {
         const selectedInstance = options.selected.instance;
         this.moveActor(selectedInstance, clickedCellPos);
+      } else {
+        this.event = null;
       }
     }
   }
@@ -197,9 +212,7 @@ export class Player {
   }
 
   attackActor(selectedInstance: Actor, enemyInstance: Actor): void {
-    const { lan } = this.game;
-
-    console.log(selectedInstance.damage, enemyInstance)
+    const { lan } = this.game.app;
 
     this.resetEvent();
 

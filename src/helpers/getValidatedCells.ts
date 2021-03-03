@@ -7,7 +7,6 @@ import {
   isPolygonInPolygon,
   createHexon,
 } from 'helpers';
-import { EventEmitter } from 'core/EventEmitter';
 
 export const getValidatedCells = (
   pos: Vector,
@@ -44,8 +43,6 @@ export const getValidatedCells = (
         blockerPos.y + distance * Math.sin(angleBetween + rotAngle)
       ),
     ];
-
-    EventEmitter.dispatch({type: 'debugArea', payload: polygonArea});
 
     validatedCells = validatedCells.filter((cell) => {
       if (isPolygonInPolygon(createHexon(cell), polygonArea)) {

@@ -1,11 +1,8 @@
-export interface IActionType<T> {
-  type: string;
-  payload: T;
-}
+import { ISocketAction } from 'core/Lan/types';
 
 interface IListener {
   type: string;
-  cb: (action: IActionType<any>) => void;
+  cb: (data: any) => void;
 }
 
 export class Emitter {
@@ -18,10 +15,11 @@ export class Emitter {
     });
   }
 
-  dispatch(action: IActionType<any>): void {
+  dispatch(action: ISocketAction): void {
     this.listeners.forEach((l) => {
       if (l.type === action.type) {
-        l.cb(action);
+        console.log('=== dispatch action ===', action);
+        l.cb(action.payload);
       }
     });
   }
