@@ -1,11 +1,7 @@
 import { Instance } from 'instances';
 import { Vector } from 'components';
 import { ActorNames } from 'instances/Actor/enums';
-import {
-  isCellInCells,
-  getCellsRange,
-  getValidatedCells,
-} from 'helpers';
+import { isCellInCells, getCellsRange, getValidatedCells } from 'helpers';
 
 export abstract class Actor extends Instance {
   abstract damage: number;
@@ -35,6 +31,10 @@ export abstract class Actor extends Instance {
         (pos) => isCellInCells(pos, currentRange) && blocker.owner === 'enemy'
       );
     });
+  }
+
+  getPositions(): Vector[] {
+    return [new Vector(this.pos.x, this.pos.y)];
   }
 
   getConfig(): any {

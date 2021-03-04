@@ -13,3 +13,4 @@ export { getRandomValue } from './getRandomValue';
 export { getPercent } from './getPercent';
 export { logger } from './logger';
 export { getQuery } from './getQuery';
+export { isCellsInCells } from './isCellsInCells';

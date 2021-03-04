@@ -22,6 +22,7 @@ export abstract class Instance {
   abstract maxHp: number;
 
   abstract getConfig(): any;
+  abstract getPositions(): Vector[];
 
   owner: OwnerType = 'player';
 
@@ -49,12 +50,6 @@ export abstract class Instance {
 
   setPosition(pos: Vector): void {
     this.pos = new Vector(pos.x, pos.y);
-  }
-
-  getPositions(): Vector[] {
-    return this.type === 'actor'
-      ? [new Vector(this.pos.x, this.pos.y)]
-      : this.posArray;
   }
 
   newTurn(): void {

@@ -1,7 +1,7 @@
 import { Game } from 'core';
 import { CONFIG } from 'constants/config';
 import { Vector } from 'components';
-import { createHexon, isCellInCells } from 'helpers';
+import { createHexon, isCellInCells, isCellsInCells } from 'helpers';
 
 import { IActorSelectedEventOptions } from './Player';
 
@@ -64,9 +64,7 @@ export class Drawer {
     // из-за сдвига гексонов прибавим 1 дополнительную ячейку для фона
     $ctx.fillRect(
       ...utils.draw
-        .getPosition(
-          new Vector(-this.stagePadding, -this.stagePadding * 1.75)
-        )
+        .getPosition(new Vector(-this.stagePadding, -this.stagePadding * 1.75))
         .spread(),
       (x + 0.5 + this.stagePadding * 2) * cellSize.x,
       (y + 0.25 + this.stagePadding * 3.25) * cellSize.y
@@ -110,19 +108,25 @@ export class Drawer {
   }
 
   drawHighlightedHexons(): void {
-    const { instances } = this.game;
+    const { instances, player } = this.game;
     const colors = this.config.field.colors;
 
     instances.forEach((instance) => {
       // подсветка полей в зависимости от статуса хода
       if (instance.type === 'building') {
+        const isVisible = isCellsInCells(
+          instance.posArray,
+          player.viewRange,
+          1
+        );
+        if (!isVisible) return;
+
         instance.posArray.forEach((subPos: Vector) => {
           this.drawHexon(subPos.x, subPos.y, {
             color: colors.building,
           });
         });
       } else {
-      
         let color = '';
         if (instance.owner === 'enemy') {
           return;
@@ -130,10 +134,13 @@ export class Drawer {
           if (!instance.canTurn && !instance.canAttack) {
             color = colors.cannotTurnAndAttack;
           } else {
-            color = !instance.canTurn || !instance.canAttack ? colors.cannotTurn : colors.canTurn;
+            color =
+              !instance.canTurn || !instance.canAttack
+                ? colors.cannotTurn
+                : colors.canTurn;
           }
         }
-  
+
         this.drawHexon(instance.pos.x, instance.pos.y, {
           color,
           alpha: 0.5,
@@ -161,7 +168,9 @@ export class Drawer {
       }
 
       // клетки врагов для атаки
-      if (isCellInCells(hoveredPos, event.options.availableBlockersCellsForAttack)) {
+      if (
+        isCellInCells(hoveredPos, event.options.availableBlockersCellsForAttack)
+      ) {
         this.drawHexon(hoveredPos.x, hoveredPos.y, {
           color: colors.enemyHover,
         });
@@ -245,9 +254,12 @@ export class Drawer {
 
   drawInstances(): void {
     const { instances, player } = this.game;
-    
+
     instances.forEach((instance) => {
-      if (instance.owner === 'enemy' && !isCellInCells(instance.pos, player.viewRange)) {
+      if (
+        instance.owner === 'enemy' &&
+        !isCellsInCells(instance.getPositions(), player.viewRange, 1)
+      ) {
         return;
       }
 
