@@ -60,8 +60,8 @@ export class LanImitator {
       type: SocketListeners.getProfileInfo,
       payload: {
         id: 1,
-        firstName: 'Denis',
-        lastName: 'Chertenko',
+        firstName: 'Гость',
+        lastName: 'Неизвестный',
         money: 100,
       },
     };

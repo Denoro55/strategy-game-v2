@@ -8,5 +8,6 @@ export {
   DrawUtils,
   Selector,
   Player,
-  EventEmitter,
 } from './Game';
+
+export { EventEmitter } from './EventEmitter';

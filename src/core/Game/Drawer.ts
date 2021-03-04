@@ -39,8 +39,7 @@ export class Drawer {
     this.drawHighlightedHexons();
     this.drawActiveHexons();
     this.drawHoveredHexon();
-    this.drawBuildings();
-    this.drawActors();
+    this.drawInstances();
     this.drawDebug();
   }
 
@@ -111,36 +110,35 @@ export class Drawer {
   }
 
   drawHighlightedHexons(): void {
-    const { actors, buildings } = this.game;
+    const { instances } = this.game;
     const colors = this.config.field.colors;
 
-    actors.forEach((actor) => {
+    instances.forEach((instance) => {
       // подсветка полей в зависимости от статуса хода
-      let color = '';
-
-      if (actor.owner === 'enemy') {
-        return;
-        color = colors.enemy;
-      } else if (actor.owner === 'player') {
-        if (!actor.canTurn && !actor.canAttack) {
-          color = colors.cannotTurnAndAttack;
-        } else {
-          color = !actor.canTurn || !actor.canAttack ? colors.cannotTurn : colors.canTurn;
-        }
-      }
-
-      this.drawHexon(actor.pos.x, actor.pos.y, {
-        color,
-        alpha: 0.5,
-      });
-    });
-
-    buildings.forEach((building) => {
-      building.posArray.forEach((subPos: Vector) => {
-        this.drawHexon(subPos.x, subPos.y, {
-          color: colors.building,
+      if (instance.type === 'building') {
+        instance.posArray.forEach((subPos: Vector) => {
+          this.drawHexon(subPos.x, subPos.y, {
+            color: colors.building,
+          });
         });
-      });
+      } else {
+      
+        let color = '';
+        if (instance.owner === 'enemy') {
+          return;
+        } else if (instance.owner === 'player') {
+          if (!instance.canTurn && !instance.canAttack) {
+            color = colors.cannotTurnAndAttack;
+          } else {
+            color = !instance.canTurn || !instance.canAttack ? colors.cannotTurn : colors.canTurn;
+          }
+        }
+  
+        this.drawHexon(instance.pos.x, instance.pos.y, {
+          color,
+          alpha: 0.5,
+        });
+      }
     });
   }
 
@@ -245,23 +243,15 @@ export class Drawer {
     $ctx.globalAlpha = 1;
   }
 
-  drawActors(): void {
-    const { actors, player } = this.game;
-
-    actors.forEach((actor) => {
-      if (actor.owner === 'enemy' && !isCellInCells(actor.pos, player.viewRange)) {
+  drawInstances(): void {
+    const { instances, player } = this.game;
+    
+    instances.forEach((instance) => {
+      if (instance.owner === 'enemy' && !isCellInCells(instance.pos, player.viewRange)) {
         return;
       }
 
-      actor.draw(this.game);
-    });
-  }
-
-  drawBuildings(): void {
-    const { buildings } = this.game;
-
-    buildings.forEach((building) => {
-      building.draw(this.game);
+      instance.draw(this.game);
     });
   }
 

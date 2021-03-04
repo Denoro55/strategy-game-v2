@@ -2,13 +2,9 @@ import { Game } from 'core';
 import { Vector } from 'components';
 import { Warrior, Spearman, Worker } from 'actors';
 import { MainBuilding } from 'buildings';
-import {
-  IBuildingOptions,
-  IBuildingConstructor,
-} from 'instances/Building/types';
-import { IActorOptions, IActorConstructor } from 'instances/Actor/types';
+import { IInstanceConstructor, IInstanceOptions } from 'instances/Instance/types';
 import { getRandomValue } from 'helpers';
-import { Actor, Building } from 'instances';
+import { Instance } from 'instances';
 import { OwnerType } from 'instances/types';
 
 export class InstanceUtils {
@@ -18,60 +14,36 @@ export class InstanceUtils {
     this.game = game;
   }
 
-  getInstances = (): (Actor | Building)[] => {
-    const { actors, buildings } = this.game;
-
-    return [...actors, ...buildings];
-  }
-
   spawnBase = (basePos: Vector, owner: OwnerType): void => {
-    const { buildings } = this.game;
-
-    this.addBuilding(MainBuilding, basePos, {
+    this.addInstance(MainBuilding, basePos, {
       owner,
     });
 
-    this.addActor(Worker, new Vector(basePos.x, basePos.y + 2), {
+    this.addInstance(Worker, new Vector(basePos.x, basePos.y + 2), {
       owner,
     });
 
-    this.addActor(Warrior, new Vector(basePos.x - 1, basePos.y + 2), { owner });
+    this.addInstance(Warrior, new Vector(basePos.x - 1, basePos.y + 2), { owner });
+    this.addInstance(Warrior, new Vector(basePos.x + 1, basePos.y + 2), { owner });
 
-    this.addActor(Warrior, new Vector(basePos.x + 1, basePos.y + 2), { owner });
-
-    this.addActor(Spearman, new Vector(basePos.x - 1, basePos.y), {
+    this.addInstance(Spearman, new Vector(basePos.x - 1, basePos.y), {
       owner,
     });
 
-    this.addActor(Spearman, new Vector(basePos.x + 1, basePos.y), {
+    this.addInstance(Spearman, new Vector(basePos.x + 1, basePos.y), {
       owner,
     });
   };
-
-  addActor(
-    ActorInstance: IActorConstructor,
+  
+  addInstance(
+    Instance: IInstanceConstructor,
     pos: Vector,
-    options: Pick<IActorOptions, 'owner'>
+    options: Pick<IInstanceOptions, 'owner'>
   ): void {
-    const { actors } = this.game;
+    const { instances } = this.game;
 
-    actors.push(
-      new ActorInstance(this.game, pos, {
-        ...options,
-        id: getRandomValue(),
-      })
-    );
-  }
-
-  addBuilding(
-    BuildingInstance: IBuildingConstructor,
-    pos: Vector,
-    options: Pick<IBuildingOptions, 'owner'>
-  ): void {
-    const { buildings } = this.game;
-
-    buildings.push(
-      new BuildingInstance(this.game, pos, {
+    instances.push(
+      new Instance(this.game, pos, {
         ...options,
         id: getRandomValue(),
       })
@@ -79,8 +51,8 @@ export class InstanceUtils {
   }
 
   // pos (integer)
-  findInstanceByPos = (pos: Vector): Actor | Building | null => {
-    const instances = this.getInstances();
+  findInstanceByPos = (pos: Vector): Instance | null => {
+    const { instances } = this.game;
 
     for (let i = 0; i < instances.length; i++) {
       const instance = instances[i];
@@ -96,8 +68,8 @@ export class InstanceUtils {
     return null;
   };
 
-  getInstanceById = (id: string): Actor | Building | undefined => {
-    const instances = this.getInstances();
+  getInstanceById = (id: string): Instance | undefined => {
+    const { instances } = this.game;
 
     return instances.find(
       (instance) => instance.options.id === id
@@ -105,17 +77,11 @@ export class InstanceUtils {
   };
 
   removeInstanceById(id: string): void {
-    const { actors, buildings } = this.game;
+    const { instances } = this.game;
 
-    const actorIndex = actors.findIndex((instance) => instance.options.id === id);
+    const actorIndex = instances.findIndex((instance) => instance.options.id === id);
     if (actorIndex !== -1) {
-      actors.splice(actorIndex, 1);
-      return;
-    }
-
-    const buildingIndex = buildings.findIndex((instance) => instance.options.id === id);
-    if (buildingIndex !== -1) {
-      buildings.splice(buildingIndex, 1);
+      instances.splice(actorIndex, 1);
     }
   }
 }

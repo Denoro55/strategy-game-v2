@@ -1,13 +1,16 @@
 import { Game } from 'core';
 import { Vector } from 'components';
 import { Actor } from 'instances';
-import { ActorNameType, IActorOptions } from 'instances/Actor/types';
+import { IInstanceType } from 'instances/types';
+import { ActorNames } from 'instances/Actor/enums';
+import { IInstanceOptions } from 'instances/Instance/types';
 import spriteUrl from 'assets/images/actors/worker.png';
 import spriteEnemyUrl from 'assets/images/actors/worker-enemy.png';
 
 export class Worker extends Actor {
+  type: IInstanceType = 'actor';
   image: HTMLImageElement;
-  name: ActorNameType = 'worker';
+  name: ActorNames = ActorNames.worker;
   cellsForMoveRange = 1;
   viewRange = 4;
   attackRange = 1;
@@ -15,7 +18,7 @@ export class Worker extends Actor {
   hp = this.maxHp;
   damage = 3;
 
-  constructor(game: Game, pos: Vector, options: IActorOptions) {
+  constructor(game: Game, pos: Vector, options: IInstanceOptions) {
     super(game, pos, options);
     this.image = this.getImage({
       player: spriteUrl,

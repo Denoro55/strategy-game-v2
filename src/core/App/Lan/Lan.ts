@@ -26,19 +26,16 @@ export class Lan {
     const { game } = app;
     const { utils } = game;
 
-    this.subscribe(
-      SocketListeners.attackInstance,
-      (data: IAttackResponse) => {
-        const { hp, id } = data;
+    this.subscribe(SocketListeners.attackInstance, (data: IAttackResponse) => {
+      const { hp, id } = data;
 
-        const instance = utils.instances.getInstanceById(id);
-        if (instance) {
-          instance.update({
-            hp,
-          });
-        }
+      const instance = utils.instances.getInstanceById(id);
+      if (instance) {
+        instance.update({
+          hp,
+        });
       }
-    );
+    });
 
     this.subscribe(
       SocketListeners.getProfileInfo,
@@ -47,12 +44,9 @@ export class Lan {
       }
     );
 
-    this.subscribe(
-      SocketListeners.startGame,
-      (options: IStartGameResponse) => {
-        app.startGame(options)
-      }
-    );
+    this.subscribe(SocketListeners.startGame, (options: IStartGameResponse) => {
+      app.startGame(options);
+    });
   }
 
   getProfileInfo(): void {

@@ -67,7 +67,6 @@ export class App {
       <div class="menu">
         <h3>Привет, ${profileInfo.firstName}!</h3>
         <p>У тебя ${profileInfo.money} ед. золота</p>
-        <p>Нажми "b" чтобы добавить 5 ед. золота</p>
         <p>Нажми "s" чтобы начать игру</p>
       </div>
     `;

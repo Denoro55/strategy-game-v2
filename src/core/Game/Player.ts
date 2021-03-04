@@ -2,17 +2,17 @@ import uniqBy from 'lodash.uniqby';
 import { Game } from 'core';
 import { IStartGameResponse, IPlayerGameInfo } from 'core/App/Lan/types';
 import { Vector } from 'components';
-import { Actor, Building } from 'instances';
+import { Instance, Actor } from 'instances';
 import { OwnerType } from 'instances/types';
 import { getEmptyCells, isCellInCells, getCellsRange } from 'helpers';
 
 import { ISelected } from './Selector';
 
 export interface IActorSelectedEventOptions {
-  selected: ISelected<Actor>;
+  selected: ISelected<Instance>;
   availableCellsForMove: Vector[];
-  blockers: (Actor | Building)[];
-  availableBlockersForAttack: (Actor | Building)[];
+  blockers: Instance[];
+  availableBlockersForAttack: Instance[];
   availableBlockersCellsForAttack: Vector[];
 }
 
@@ -47,10 +47,10 @@ export class Player {
   }
 
   updateViewRange(): void {
-    const { actors, buildings } = this.game;
+    const { instances } = this.game;
     this.viewRange = [];
 
-    [...actors, ...buildings].forEach((instance) => {
+    instances.forEach((instance) => {
       if (instance.owner === 'enemy') return;
 
       const positions = instance.getPositions();
@@ -64,11 +64,12 @@ export class Player {
   }
 
   refreshTurn(): void {
-    const { actors } = this.game;
+    const { instances } = this.game;
 
     this.event = null;
 
-    actors.forEach((instance) => {
+    instances.forEach((instance) => {
+      // TODO (d.chertenko) new turn для зданий ?
       instance.newTurn();
     });
   }
@@ -85,7 +86,7 @@ export class Player {
 
   handleClick(mousePos: Vector): void {
     const { utils, selector } = this.game;
-    const event = this.event;
+    const { event } = this;
 
     const clickedCellPos = utils.getHoveredCell(mousePos);
 
@@ -96,50 +97,40 @@ export class Player {
       const selectedInstance = selected.instance;
 
       if (selectedInstance) {
-        if (
-          selectedInstance.owner === 'player' &&
-          selectedInstance.type === 'actor'
-        ) {
-          this.handleSelect(selected as ISelected<Actor>);
-        } else if (selectedInstance.owner === 'enemy') {
-          this.handleAttack(clickedCellPos);
+         // выбрана сущность игрока
+        if (selectedInstance.owner === 'player') {
+          if (selectedInstance.type === 'actor') {
+            this.handleSelectActor(selected as ISelected<Actor>);
+          }
+        } else {
+          // выбрана вражеская сущность
+          if (event && event.type === 'actorSelected') {
+            const selectedActor = event.options.selected.instance as Actor;
+            const cellsForAttack = event.options.availableBlockersCellsForAttack;
+            if (isCellInCells(clickedCellPos, cellsForAttack)) {
+              this.attackInstance(selectedActor, selectedInstance);
+            }
+          }
         }
       } else {
-        // Выбрана пустая клетка. Ищем врагов
+        // выбрана пустая ячейка
         if (event && event.type === 'actorSelected') {
-          const options = event.options as IActorSelectedEventOptions;
-          const cellsForAttack = event.options.availableBlockersCellsForAttack;
+          const options = event.options;
+          const selectedActor = options.selected.instance as Actor;
 
-          if (isCellInCells(clickedCellPos, cellsForAttack)) {
-            const enemyinstance = utils.instances.findInstanceByPos(clickedCellPos);
-
-            if (enemyinstance) {
-              this.attackInstance(options.selected.instance, enemyinstance);
-            }
+          if (isCellInCells(clickedCellPos, options.availableCellsForMove)) {
+            this.moveActor(selectedActor, clickedCellPos);
           } else {
-            // Враги не найдены. Клетка пустая
-            this.handleMove(clickedCellPos);
+            this.event = null;
           }
         }
       }
     }
   }
 
-  handleSelect(selected: ISelected<Actor>): void {
-    const selectedInstance = selected.instance;
-
-    if (selectedInstance) {
-      if (selectedInstance.type === 'actor') {
-        this.handleSelectActor(selected);
-      }
-    }
-  }
-
   handleSelectActor(selected: ISelected<Actor>): void {
-    const { actors, buildings, utils } = this.game;
-    const instance = selected.instance as Actor;
-
-    const instances = [...actors, ...buildings];
+    const { instances, utils } = this.game;
+    const instance = selected.instance;
 
     const turnCells = instance.canTurn
       ? utils.getCellsOnlyOnStage(instance.getCellsForMove())
@@ -167,39 +158,7 @@ export class Player {
     );
   }
 
-  handleMove(clickedCellPos: Vector): void {
-    const currentEvent = this.event;
-
-    if (currentEvent && currentEvent.type === 'actorSelected') {
-      const options = currentEvent.options as IActorSelectedEventOptions;
-
-      if (isCellInCells(clickedCellPos, options.availableCellsForMove)) {
-        const selectedInstance = options.selected.instance;
-        this.moveActor(selectedInstance, clickedCellPos);
-      } else {
-        this.event = null;
-      }
-    }
-  }
-
-  handleAttack(clickedCellPos: Vector): void {
-    const { selector } = this.game;
-    const currentEvent = this.event;
-
-    if (currentEvent && currentEvent.type === 'actorSelected') {
-      const options = currentEvent.options as IActorSelectedEventOptions;
-
-      if (
-        isCellInCells(clickedCellPos, options.availableBlockersCellsForAttack)
-      ) {
-        const selectedInstance = options.selected.instance;
-        const enemyInstance = selector.selected.instance as Actor;
-        this.attackInstance(selectedInstance, enemyInstance);
-      }
-    }
-  }
-
-  moveActor(instance: Actor, pos: Vector): void {
+  moveActor(instance: Instance, pos: Vector): void {
     instance.setPosition(pos);
     this.resetEvent();
     this.updateViewRange();
@@ -209,10 +168,10 @@ export class Player {
   }
 
   selectActor(
-    selected: ISelected<Actor>,
+    selected: ISelected<Instance>,
     availableCellsForMove: Vector[],
-    blockers: (Actor | Building)[],
-    availableBlockersForAttack: (Actor | Building)[]
+    blockers: Instance[],
+    availableBlockersForAttack: Instance[]
   ): void {
     const availableBlockersCellsForAttack: Vector[] = availableBlockersForAttack.reduce(
       (acc: Vector[], instance) => {
@@ -234,7 +193,7 @@ export class Player {
     };
   }
 
-  attackInstance(selectedInstance: Actor, enemyInstance: Actor | Building): void {
+  attackInstance(selectedInstance: Actor, enemyInstance: Instance): void {
     const { lan } = this.game.app;
 
     this.resetEvent();

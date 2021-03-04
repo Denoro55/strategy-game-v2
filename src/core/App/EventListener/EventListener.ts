@@ -87,8 +87,9 @@ export class EventListener {
 
   handleKeyDown(event: KeyboardEvent): void {
     const { game, lan } = this.app;
+    const key = event.key.toLowerCase();
 
-    if (event.key === 's') {
+    if (key === 's' || key === 'ы') {
       this.app.profileInfo && lan.startGame(this.app.client);
     }
 

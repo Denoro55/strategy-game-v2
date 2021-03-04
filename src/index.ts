@@ -5,6 +5,8 @@ import { CONFIG } from 'constants/config';
 import { getQuery } from 'helpers';
 import { IClient } from 'types';
 
+const ONLY_DEV = true;
+
 const MODE =
   process.env.NODE_ENV === 'development' ? 'development' : 'production';
 const isDevMode = MODE === 'development';
@@ -21,6 +23,12 @@ const MOCK_CLIENT: IClient = {
   lastName: 'Chertenko',
 };
 
+if (!isDevMode) {
+  console.log = () => {
+    return;
+  };
+}
+
 const $container: HTMLDivElement | null = document.querySelector('#app');
 
 if ($container) {
@@ -29,9 +37,9 @@ if ($container) {
     isDevMode,
     socketHost: SOCKET_HOST,
     logs: LOGS,
-  }
+  };
 
-  if (isDevMode) {
+  if (isDevMode || ONLY_DEV) {
     new App({
       ...BASE_APP_OPTIONS,
       client: MOCK_CLIENT,

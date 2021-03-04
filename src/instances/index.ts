@@ -1,2 +1,3 @@
+export { Instance } from './Instance';
 export { Actor } from './Actor';
-export { Building } from './Building/Building';
+export { Building } from './Building';

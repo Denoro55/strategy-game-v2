@@ -2,7 +2,7 @@ import { Drawer, Utils, Selector, Player, App } from 'core';
 import { IStartGameResponse } from 'core/App/Lan/types';
 import { CONFIG } from 'constants/config';
 import { Vector } from 'components';
-import { Actor, Building } from 'instances';
+import { Instance } from 'instances';
 import { logger } from 'helpers';
 
 const timeLogger = logger();
@@ -29,8 +29,7 @@ export class Game {
   mousePos: Vector = new Vector(0, 0); // нативная позиция мышки на канвасе (в px)
   stageCells: Vector; // количество видимых ячеек по x и y
 
-  actors: Actor[] = [];
-  buildings: Building[] = [];
+  instances: Instance[] = [];
 
   isInitialized = false;
 
@@ -101,12 +100,13 @@ export class Game {
 
   handleKeyDown(event: KeyboardEvent): void {
     const { player } = this;
+    const key = event.key.toLocaleLowerCase();
 
     if (event.key === 'i') {
       console.log(this);
     }
 
-    if (event.key === 'r') {
+    if (key === 'r' || key === 'к') {
       player.refreshTurn();
     }
   }

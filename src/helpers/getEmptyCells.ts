@@ -1,17 +1,17 @@
 import { Vector } from 'components';
-import { Actor, Building } from 'instances';
+import { Instance } from 'instances';
 
 interface IEmptyCells {
   emptyCells: Vector[],
-  colliders: (Actor | Building)[]
+  colliders: Instance[]
 }
 
 export const getEmptyCells = (
   cells: Vector[],
-  colliders: (Actor | Building)[]
+  colliders: Instance[]
 ): IEmptyCells => {
   const emptyCells: Vector[] = [];
-  const blockers: (Actor | Building)[] = [];
+  const blockers: Instance[] = [];
 
   cells.forEach((cell) => {
     let isEmpty = true;
