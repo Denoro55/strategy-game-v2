@@ -195,7 +195,7 @@ export class Player {
   }
 
   attackInstance(selectedInstance: Actor, enemyInstance: Instance): void {
-    // const { lan } = this.game.app;
+    const { lan } = this.game;
 
     this.resetEvent();
 
@@ -203,9 +203,9 @@ export class Player {
       canAttack: false,
     });
 
-    // lan.attackInstance({
-    //   id: enemyInstance.options.id,
-    //   damage: selectedInstance.damage,
-    // });
+    lan.attackInstance({
+      id: enemyInstance.options.id,
+      damage: selectedInstance.damage,
+    });
   }
 }

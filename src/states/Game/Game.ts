@@ -1,5 +1,6 @@
 import { App } from 'app';
 import { Drawer, Utils, Selector, Player, EventListener } from 'states/Game';
+import { Lan } from './Lan';
 import { CONFIG } from 'constants/config';
 import { Vector } from 'components';
 import { logger } from 'helpers';
@@ -31,6 +32,7 @@ export class Game {
   selector: Selector;
   player: Player;
   eventListener: EventListener;
+  lan: Lan;
 
   viewOffset: Vector = new Vector(0, 0); // сдвиг экрана (не в px)
   mousePos: Vector = new Vector(0, 0); // нативная позиция мышки на канвасе (в px)
@@ -62,6 +64,7 @@ export class Game {
     this.selector = new Selector(this);
     this.player = new Player(this);
     this.eventListener = new EventListener(this);
+    this.lan = new Lan(app, this);
 
     this.stageCells = new Vector(
       Math.ceil(width / cellSize.x) + 1,
