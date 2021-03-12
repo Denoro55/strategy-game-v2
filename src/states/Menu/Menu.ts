@@ -22,6 +22,11 @@ export class Menu {
     this.lan.getProfileInfo();
   }
 
+  destroy(): void {
+    this.eventListener.destroyListeners();
+    this.lan.destroyListeners();
+  }
+
   draw(): void {
     const { profileInfo, client } = this.app;
 

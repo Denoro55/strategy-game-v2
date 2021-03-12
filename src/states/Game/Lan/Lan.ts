@@ -12,20 +12,28 @@ export class Lan extends LanCore {
     super(app, new LanImitator(app, game));
     this.game = game;
 
+    this.handleAttackInstance = this.handleAttackInstance.bind(this);
+
     this.initListeners();
   }
 
   initListeners(): void {
-    this.subscribe(SocketListeners.attackInstance, (data: IAttackResponse) => {
-      const { hp, id } = data;
+    this.subscribe(SocketListeners.attackInstance, this.handleAttackInstance);
+  }
 
-      const instance = this.game.utils.instances.getInstanceById(id);
-      if (instance) {
-        instance.update({
-          hp,
-        });
-      }
-    });
+  destroyListeners(): void {
+    this.unsubscribe(SocketListeners.attackInstance, this.handleAttackInstance);
+  }
+
+  handleAttackInstance(data: IAttackResponse): void {
+    const { hp, id } = data;
+
+    const instance = this.game.utils.instances.getInstanceById(id);
+    if (instance) {
+      instance.update({
+        hp,
+      });
+    }
   }
 
   attackInstance(options: IAttackEvent): void {

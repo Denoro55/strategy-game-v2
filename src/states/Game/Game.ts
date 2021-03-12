@@ -5,7 +5,6 @@ import { CONFIG } from 'constants/config';
 import { Vector } from 'components';
 import { logger } from 'helpers';
 import { IStartGameResponse } from 'states/Menu/components/Lan/types';
-import { SocketListeners } from 'core/LanCore/enums';
 
 import { Instance } from './instances';
 
@@ -41,6 +40,7 @@ export class Game {
   instances: Instance[] = [];
 
   isInitialized = false;
+  isDestroyed = false;
 
   constructor(app: App, options: IGameOptions) {
     this.app = app;
@@ -90,29 +90,18 @@ export class Game {
     this.render();
   }
 
-  onSocketEvent(eventType: SocketListeners, data: any): void {
-    switch (eventType) {
-      case SocketListeners.attackInstance: {
-        const { utils } = this;
-        const { hp, id } = data;
-        const instance = utils.instances.getInstanceById(id);
-        if (instance) {
-          instance.update({
-            hp,
-          });
-        }
-        break;
-      }
-      default: {
-        // code
-      }
-    }
+  destroy(): void {
+    this.eventListener.destroyListeners();
+    this.lan.destroyListeners();
+    this.isDestroyed = true;
   }
 
   render(): void {
     const { log } = this.options;
 
     const loop = () => {
+      if (this.isDestroyed) return;
+
       const time: number = performance.now();
 
       this.drawer.draw();

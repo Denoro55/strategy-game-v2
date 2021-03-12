@@ -17,6 +17,10 @@ export class LanCore {
     EventEmitter.subscribe(type, cb);
   }
 
+  unsubscribe(type: SocketListeners, cb: (...args: any[]) => void): void {
+    EventEmitter.unsubscribe(type, cb);
+  }
+
   emit<T>(type: SocketActions, options: T): void {
     EventEmitter.dispatch(
       this.lanImitator.imitateResponse({

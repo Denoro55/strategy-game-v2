@@ -9,11 +9,17 @@ export class EventListener {
     this.app = app;
     this.menu = menu;
 
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+
     this.initListeners();
   }
 
   initListeners(): void {
-    document.addEventListener('keydown', this.handleKeyDown.bind(this));
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  destroyListeners(): void {
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
 
   handleKeyDown(event: KeyboardEvent): void {

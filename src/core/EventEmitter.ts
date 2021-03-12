@@ -15,6 +15,12 @@ export class Emitter {
     });
   }
 
+  unsubscribe(type: string, listener: IListener['cb']): void {
+    this.listeners = this.listeners.filter(
+      (l) => l.cb !== listener && l.type !== type
+    );
+  }
+
   dispatch(action: ISocketAction): void {
     this.listeners.forEach((l) => {
       if (l.type === action.type) {

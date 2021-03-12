@@ -39,6 +39,7 @@ export class App {
   }
 
   setState(stateName: keyof IStates, options: any = {}): void {
+    this.activeState.destroy();
     const State = this.states[stateName];
 
     // TODO (d.chertenko) сделать типизацию

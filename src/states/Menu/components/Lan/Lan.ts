@@ -17,21 +17,29 @@ export class Lan extends LanCore {
     super(app, new LanImitator(app));
     this.menu = menu;
 
+    this.handleStartGame = this.handleStartGame.bind(this);
+    this.handleGetProfileInfo = this.handleGetProfileInfo.bind(this);
+
     this.initListeners();
   }
 
   initListeners(): void {
-    this.subscribe(
-      SocketListeners.getProfileInfo,
-      (data: IProfileInfoResponse) => {
-        this.app.setProfileInfo(data);
-        this.menu.draw();
-      }
-    );
+    this.subscribe(SocketListeners.getProfileInfo, this.handleGetProfileInfo);
+    this.subscribe(SocketListeners.startGame, this.handleStartGame);
+  }
 
-    this.subscribe(SocketListeners.startGame, (options: IStartGameResponse) => {
-      this.app.startGame(options);
-    });
+  destroyListeners(): void {
+    this.unsubscribe(SocketListeners.getProfileInfo, this.handleGetProfileInfo);
+    this.unsubscribe(SocketListeners.startGame, this.handleStartGame);
+  }
+
+  handleStartGame(options: IStartGameResponse): void {
+    this.app.startGame(options);
+  }
+
+  handleGetProfileInfo(data: IProfileInfoResponse): void {
+    this.app.setProfileInfo(data);
+    this.menu.draw();
   }
 
   getProfileInfo(): void {

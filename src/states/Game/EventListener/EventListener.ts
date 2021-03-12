@@ -1,3 +1,4 @@
+import { EventEmitter } from 'core';
 import { Game } from 'states';
 import { Vector } from 'components';
 
@@ -16,22 +17,29 @@ export class EventListener {
     this.startOffset = new Vector(0, 0);
     this.isDragging = false;
 
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+
     this.initListeners();
   }
 
   initListeners(): void {
-    this.$canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
+    this.$canvas.addEventListener('mousedown', this.handleMouseDown);
+    this.$canvas.addEventListener('mouseup', this.handleMouseUp);
+    this.$canvas.addEventListener('mousemove', this.handleMouseMove);
+    this.$canvas.addEventListener('mouseleave', this.handleMouseLeave);
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
 
-    this.$canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
-
-    this.$canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-
-    this.$canvas.addEventListener(
-      'mouseleave',
-      this.handleMouseLeave.bind(this)
-    );
-
-    document.addEventListener('keydown', this.handleKeyDown.bind(this));
+  destroyListeners(): void {
+    this.$canvas.removeEventListener('mousedown', this.handleMouseDown);
+    this.$canvas.removeEventListener('mouseup', this.handleMouseUp);
+    this.$canvas.removeEventListener('mousemove', this.handleMouseMove);
+    this.$canvas.removeEventListener('mouseleave', this.handleMouseLeave);
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
 
   handleMouseDown(event: MouseEvent): void {
@@ -75,7 +83,9 @@ export class EventListener {
     game.mousePos = mousePos;
 
     if (this.isDragging) {
-      game.viewOffset = game.utils.convertPosition(this.startPos.diff(mousePos));
+      game.viewOffset = game.utils.convertPosition(
+        this.startPos.diff(mousePos)
+      );
     }
   }
 
@@ -88,7 +98,7 @@ export class EventListener {
     const key = event.key.toLocaleLowerCase();
 
     if (event.key === 'i') {
-      console.log(this);
+      console.log(this, EventEmitter);
     }
 
     if (key === 'r' || key === 'к') {
