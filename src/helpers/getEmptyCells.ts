@@ -1,5 +1,5 @@
 import { Vector } from 'components';
-import { Instance } from 'states/Game/instances';
+import { Instance } from 'states/Game/components/instances';
 
 interface IEmptyCells {
   emptyCells: Vector[],

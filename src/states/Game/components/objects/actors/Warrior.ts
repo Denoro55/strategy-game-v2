@@ -3,10 +3,10 @@ import { Vector } from 'components';
 import spriteUrl from 'assets/images/actors/warrior.png';
 import spriteEnemyUrl from 'assets/images/actors/warrior-enemy.png';
 
-import { Actor } from '../instances';
-import { IInstanceType } from '../instances/types';
-import { ActorNames } from '../instances/Actor/enums';
-import { IInstanceOptions } from '../instances/Instance/types';
+import { Actor } from '../../instances';
+import { IInstanceType } from '../../instances/types';
+import { ActorNames } from '../../instances/Actor/enums';
+import { IInstanceOptions } from '../../instances/Instance/types';
 
 export class Warrior extends Actor {
   type: IInstanceType = 'actor';

@@ -1,5 +1,6 @@
 import { Vector } from 'components';
-import { Game, InstanceUtils, DrawUtils } from 'states/Game';
+import { Game } from 'states/Game';
+import { InstanceUtils, DrawUtils } from 'states/Game/components';
 import { createHexon, isPointInPolygon } from 'helpers';
 
 export class Utils {

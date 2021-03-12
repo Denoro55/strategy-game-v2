@@ -1,12 +1,17 @@
 import { App } from 'app';
-import { Drawer, Utils, Selector, Player, EventListener } from 'states/Game';
-import { Lan } from './Lan';
+import {
+  Drawer,
+  Utils,
+  Selector,
+  Player,
+  EventListener,
+  Lan,
+  Instance,
+} from './components';
 import { CONFIG } from 'constants/config';
 import { Vector } from 'components';
 import { logger } from 'helpers';
 import { IStartGameResponse } from 'states/Menu/components/Lan/types';
-
-import { Instance } from './instances';
 
 const timeLogger = logger();
 

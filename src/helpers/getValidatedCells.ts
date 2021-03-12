@@ -1,4 +1,4 @@
-import { Instance } from 'states/Game/instances';
+import { Instance } from 'states/Game/components/instances';
 import { Vector } from 'components';
 import {
   getEvenXOffset,

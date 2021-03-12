@@ -1,9 +1,9 @@
 import { Game } from 'states';
 import { Vector } from 'components';
 import { getRandomValue } from 'helpers';
+import { MainBuilding } from 'states/Game/components/objects/buildings';
 
-import { Warrior, Spearman, Worker } from '../actors';
-import { MainBuilding } from '../buildings';
+import { Warrior, Spearman, Worker } from '../objects/actors';
 import { IInstanceConstructor } from '../instances/Instance/Instance';
 import { IInstanceOptions } from '../instances/Instance/types';
 import { Instance } from '../instances';

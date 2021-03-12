@@ -3,10 +3,10 @@ import { Vector } from 'components';
 import spriteUrl from 'assets/images/actors/spearman.png';
 import spriteEnemyUrl from 'assets/images/actors/spearman-enemy.png';
 
-import { Actor } from '../instances';
-import { IInstanceType } from '../instances/types';
-import { IInstanceOptions } from '../instances/Instance/types';
-import { ActorNames } from '../instances/Actor/enums';
+import { Actor } from '../../instances';
+import { IInstanceType } from '../../instances/types';
+import { IInstanceOptions } from '../../instances/Instance/types';
+import { ActorNames } from '../../instances/Actor/enums';
 
 export class Spearman extends Actor {
   type: IInstanceType = 'actor';

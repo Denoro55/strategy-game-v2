@@ -3,10 +3,10 @@ import { Vector } from 'components';
 import spriteUrl from 'assets/images/buildings/main.png';
 import spriteEnemyUrl from 'assets/images/buildings/main-enemy.png';
 
-import { Building } from '../instances';
-import { IInstanceType } from '../instances/types';
-import { BuildingNames } from '../instances/Building/enums';
-import { IInstanceOptions } from '../instances/Instance/types';
+import { Building } from '../../instances';
+import { IInstanceType } from '../../instances/types';
+import { BuildingNames } from '../../instances/Building/enums';
+import { IInstanceOptions } from '../../instances/Instance/types';
 
 export class MainBuilding extends Building {
   type: IInstanceType = 'building';
