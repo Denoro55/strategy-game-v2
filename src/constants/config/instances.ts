@@ -1,6 +1,7 @@
 import { Vector } from 'components';
-import { ActorNames } from 'instances/Actor/enums';
-import { BuildingNames } from 'instances/Building/enums';
+
+import { ActorNames } from 'states/Game/instances/Actor/enums';
+import { BuildingNames } from 'states/Game/instances/Building/enums';
 
 const BASE_ACTOR_SIZE = new Vector(53, 53);
 

@@ -1,4 +1,4 @@
-import { ISocketAction } from 'core/App/Lan/types';
+import { ISocketAction } from 'core/LanCore/types';
 
 interface IListener {
   type: string;

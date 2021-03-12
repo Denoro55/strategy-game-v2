@@ -1,6 +1,8 @@
 import 'assets/styles/index.scss';
 
-import { App } from 'core';
+import { App } from 'app';
+import { IStatesConstructors } from 'app/types';
+import { Game, Menu } from 'states';
 import { CONFIG } from 'constants/config';
 import { getQuery } from 'helpers';
 import { IClient } from 'types';
@@ -31,12 +33,18 @@ if (!isDevMode) {
 
 const $container: HTMLDivElement | null = document.querySelector('#app');
 
+const states: IStatesConstructors = {
+  menu: Menu,
+  game: Game,
+};
+
 if ($container) {
   const BASE_APP_OPTIONS = {
     container: $container,
     isDevMode,
     socketHost: SOCKET_HOST,
     logs: LOGS,
+    states,
   };
 
   if (isDevMode || ONLY_DEV) {
