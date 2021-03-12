@@ -6,7 +6,7 @@ import spriteEnemyUrl from 'assets/images/actors/worker-enemy.png';
 import { Actor } from '../../instances';
 import { IInstanceType } from '../../instances/types';
 import { ActorNames } from '../../instances/Actor/enums';
-import { IInstanceOptions } from '../../instances/Instance/types';
+import { IInstanceOptions } from '../../instances/types';
 
 export class Worker extends Actor {
   type: IInstanceType = 'actor';

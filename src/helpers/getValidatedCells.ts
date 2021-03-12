@@ -1,4 +1,4 @@
-import { Instance } from 'states/Game/components/instances';
+import { AnyInstance } from 'states/Game/components/instances/types';
 import { Vector } from 'components';
 import {
   getEvenXOffset,
@@ -8,15 +8,17 @@ import {
   createHexon,
 } from 'helpers';
 
+// заблокировать ячейки за блокерами (врагами)
 export const getValidatedCells = (
   pos: Vector,
   size: number,
   cells: Vector[],
-  blockers: Instance[]
+  blockers: AnyInstance[]
 ): Vector[] => {
   let validatedCells = [...cells];
 
   blockers.forEach((blocker) => {
+    if (blocker.owner === 'neutral') return;
     if (blocker.owner === 'player' || blocker.type === 'building') return;
 
     const blockerPos = new Vector(

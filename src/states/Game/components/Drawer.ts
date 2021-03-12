@@ -36,6 +36,7 @@ export class Drawer {
 
     this.drawBackground();
     this.drawGrid();
+    this.drawNeutrals();
     this.drawHighlightedHexons();
     this.drawActiveHexons();
     this.drawHoveredHexon();
@@ -105,6 +106,14 @@ export class Drawer {
         }
       }
     }
+  }
+
+  drawNeutrals(): void {
+    const { neutrals } = this.game;
+
+    neutrals.forEach((neutral) => {
+      neutral.draw();
+    });
   }
 
   drawHighlightedHexons(): void {

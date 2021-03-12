@@ -7,6 +7,7 @@ import {
   EventListener,
   Lan,
   Instance,
+  Neutral,
 } from './components';
 import { CONFIG } from 'constants/config';
 import { Vector } from 'components';
@@ -43,6 +44,7 @@ export class Game {
   stageCells: Vector; // количество видимых ячеек по x и y
 
   instances: Instance[] = [];
+  neutrals: Neutral[] = []
 
   isInitialized = false;
   isDestroyed = false;

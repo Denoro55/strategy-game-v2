@@ -1,7 +1,7 @@
 import { Game } from 'states';
 import { Vector } from 'components';
 
-import { Instance } from './instances';
+import { AnyInstance } from './instances/types';
 
 export interface ISelected<InstanceType> {
   pos: Vector;
@@ -10,7 +10,7 @@ export interface ISelected<InstanceType> {
 
 export class Selector {
   game: Game;
-  selected: ISelected<Instance | null> = {
+  selected: ISelected<AnyInstance | null> = {
     pos: new Vector(0, 0),
     instance: null,
   };
@@ -23,9 +23,8 @@ export class Selector {
     const {
       game: { instances },
     } = this;
-    let instance: Instance | null = null;
+    let instance: AnyInstance | null = null;
 
-    // TODO (d.chertenko): РЕШЕНИЕ ПРОБЛЕМЫ С ВЫБОРОМ. ЗДАНИЕ С 3 ЯЧЕЙКАМИ
     for (let i = 0; i < instances.length; i++) {
       const iterateInstance = instances[i];
       const positions = iterateInstance.getPositions();
@@ -48,7 +47,7 @@ export class Selector {
     return !!this.selected.instance;
   }
 
-  getSelected(): ISelected<Instance | null> {
+  getSelected(): ISelected<AnyInstance | null> {
     return this.selected;
   }
 }

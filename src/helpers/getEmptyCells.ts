@@ -1,17 +1,17 @@
 import { Vector } from 'components';
-import { Instance } from 'states/Game/components/instances';
+import { AnyInstance } from 'states/Game/components/instances/types';
 
 interface IEmptyCells {
-  emptyCells: Vector[],
-  colliders: Instance[]
+  emptyCells: Vector[];
+  colliders: AnyInstance[];
 }
 
 export const getEmptyCells = (
   cells: Vector[],
-  colliders: Instance[]
+  colliders: AnyInstance[]
 ): IEmptyCells => {
   const emptyCells: Vector[] = [];
-  const blockers: Instance[] = [];
+  const blockers: AnyInstance[] = [];
 
   cells.forEach((cell) => {
     let isEmpty = true;
@@ -40,6 +40,6 @@ export const getEmptyCells = (
 
   return {
     emptyCells,
-    colliders: blockers
+    colliders: blockers,
   };
 };

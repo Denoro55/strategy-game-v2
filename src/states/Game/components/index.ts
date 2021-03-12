@@ -5,4 +5,4 @@ export { Player } from './Player';
 export { EventListener } from './EventListener';
 export { Lan } from './Lan';
 
-export { Instance } from './instances';
+export { Instance, Neutral } from './instances';

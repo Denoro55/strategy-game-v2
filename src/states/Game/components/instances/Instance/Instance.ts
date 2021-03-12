@@ -2,17 +2,15 @@ import { Game } from 'states';
 import { Vector } from 'components';
 import { getPercent } from 'helpers';
 import {
-  IInstanceOptions,
   IInstanceImages,
   IInstanceUpdateOptions,
 } from './types';
+import {
+  IInstanceOptions,
+} from '../types';
 import { IInstanceType, OwnerType } from '../types';
 
 const HEALTHBAR_HEIGHT = 7;
-
-export interface IInstanceConstructor {
-  new (game: Game, position: Vector, options: IInstanceOptions): Instance;
-}
 
 export abstract class Instance {
   game: Game;
@@ -113,6 +111,7 @@ export abstract class Instance {
     }
   }
 
+  // TODO (d.chertenko) убрать game аргумент
   draw(game: Game): void {
     const { $ctx, utils } = game;
     const { cellSize } = game.config.stage;

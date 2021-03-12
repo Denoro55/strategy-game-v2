@@ -5,7 +5,7 @@ import spriteEnemyUrl from 'assets/images/actors/spearman-enemy.png';
 
 import { Actor } from '../../instances';
 import { IInstanceType } from '../../instances/types';
-import { IInstanceOptions } from '../../instances/Instance/types';
+import { IInstanceOptions } from '../../instances/types';
 import { ActorNames } from '../../instances/Actor/enums';
 
 export class Spearman extends Actor {

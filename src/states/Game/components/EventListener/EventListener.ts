@@ -98,7 +98,7 @@ export class EventListener {
     const key = event.key.toLocaleLowerCase();
 
     if (event.key === 'i') {
-      console.log(this, EventEmitter);
+      console.log(this.game, EventEmitter);
     }
 
     if (key === 'r' || key === 'к') {

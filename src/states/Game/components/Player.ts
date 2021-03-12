@@ -5,15 +5,16 @@ import { IStartGameResponse } from 'states/Menu/components/Lan/types';
 import { Vector } from 'components';
 import { getEmptyCells, isCellInCells, getCellsRange } from 'helpers';
 
+import { Crystals } from './objects/neutral/Crystals';
 import { Instance, Actor } from './instances';
-import { OwnerType } from './instances/types';
+import { OwnerType, AnyInstance } from './instances/types';
 import { ISelected } from './Selector';
 
 export interface IActorSelectedEventOptions {
   selected: ISelected<Instance>;
   availableCellsForMove: Vector[];
-  blockers: Instance[];
-  availableBlockersForAttack: Instance[];
+  blockers: AnyInstance[];
+  availableBlockersForAttack: AnyInstance[];
   availableBlockersCellsForAttack: Vector[];
 }
 
@@ -44,6 +45,10 @@ export class Player {
       }
     });
 
+    this.game.utils.instances.addNeutral(Crystals, new Vector(7, 4), {
+      owner: 'neutral'
+    })
+
     this.updateViewRange();
   }
 
@@ -52,7 +57,7 @@ export class Player {
     this.viewRange = [];
 
     instances.forEach((instance) => {
-      if (instance.owner === 'enemy') return;
+      if (instance.owner === 'enemy' || instance.owner === 'neutral') return;
 
       const positions = instance.getPositions();
       positions.forEach((pos) => {
@@ -103,13 +108,13 @@ export class Player {
           if (selectedInstance.type === 'actor') {
             this.handleSelectActor(selected as ISelected<Actor>);
           }
-        } else {
+        } else if (selectedInstance.owner === 'enemy') {
           // выбрана вражеская сущность
           if (event && event.type === 'actorSelected') {
             const selectedActor = event.options.selected.instance as Actor;
             const cellsForAttack = event.options.availableBlockersCellsForAttack;
             if (isCellInCells(clickedCellPos, cellsForAttack)) {
-              this.attackInstance(selectedActor, selectedInstance);
+              this.attackInstance(selectedActor, selectedInstance as Instance);
             }
           }
         }
@@ -130,13 +135,13 @@ export class Player {
   }
 
   handleSelectActor(selected: ISelected<Actor>): void {
-    const { instances, utils } = this.game;
+    const { instances, neutrals, utils } = this.game;
     const instance = selected.instance;
 
     const turnCells = instance.canTurn
       ? utils.getCellsOnlyOnStage(instance.getCellsForMove())
       : [];
-    const { emptyCells, colliders } = getEmptyCells(turnCells, instances);
+    const { emptyCells, colliders } = getEmptyCells(turnCells, [...instances, ...neutrals]);
 
     const availableCellsForMove = instance.validateCellsForMove(
       emptyCells,
@@ -171,8 +176,8 @@ export class Player {
   selectActor(
     selected: ISelected<Instance>,
     availableCellsForMove: Vector[],
-    blockers: Instance[],
-    availableBlockersForAttack: Instance[]
+    blockers: AnyInstance[],
+    availableBlockersForAttack: AnyInstance[]
   ): void {
     const availableBlockersCellsForAttack: Vector[] = availableBlockersForAttack.reduce(
       (acc: Vector[], instance) => {

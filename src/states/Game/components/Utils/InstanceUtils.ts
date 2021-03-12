@@ -4,9 +4,8 @@ import { getRandomValue } from 'helpers';
 import { MainBuilding } from 'states/Game/components/objects/buildings';
 
 import { Warrior, Spearman, Worker } from '../objects/actors';
-import { IInstanceConstructor } from '../instances/Instance/Instance';
-import { IInstanceOptions } from '../instances/Instance/types';
-import { Instance } from '../instances';
+import { IInstanceConstructor, IInstanceOptions } from '../instances/types';
+import { Instance, Neutral } from '../instances';
 import { OwnerType } from '../instances/types';
 
 export class InstanceUtils {
@@ -25,8 +24,12 @@ export class InstanceUtils {
       owner,
     });
 
-    this.addInstance(Warrior, new Vector(basePos.x - 1, basePos.y + 2), { owner });
-    this.addInstance(Warrior, new Vector(basePos.x + 1, basePos.y + 2), { owner });
+    this.addInstance(Warrior, new Vector(basePos.x - 1, basePos.y + 2), {
+      owner,
+    });
+    this.addInstance(Warrior, new Vector(basePos.x + 1, basePos.y + 2), {
+      owner,
+    });
 
     this.addInstance(Spearman, new Vector(basePos.x - 1, basePos.y), {
       owner,
@@ -36,9 +39,9 @@ export class InstanceUtils {
       owner,
     });
   };
-  
+
   addInstance(
-    Instance: IInstanceConstructor,
+    Instance: IInstanceConstructor<Instance>,
     pos: Vector,
     options: Pick<IInstanceOptions, 'owner'>
   ): void {
@@ -46,6 +49,21 @@ export class InstanceUtils {
 
     instances.push(
       new Instance(this.game, pos, {
+        ...options,
+        id: getRandomValue(),
+      })
+    );
+  }
+
+  addNeutral(
+    Neutral: IInstanceConstructor<Neutral>,
+    pos: Vector,
+    options: Pick<IInstanceOptions, 'owner'>
+  ): void {
+    const { neutrals } = this.game;
+
+    neutrals.push(
+      new Neutral(this.game, pos, {
         ...options,
         id: getRandomValue(),
       })
@@ -73,15 +91,15 @@ export class InstanceUtils {
   getInstanceById = (id: string): Instance | undefined => {
     const { instances } = this.game;
 
-    return instances.find(
-      (instance) => instance.options.id === id
-    );
+    return instances.find((instance) => instance.options.id === id);
   };
 
   removeInstanceById(id: string): void {
     const { instances } = this.game;
 
-    const actorIndex = instances.findIndex((instance) => instance.options.id === id);
+    const actorIndex = instances.findIndex(
+      (instance) => instance.options.id === id
+    );
     if (actorIndex !== -1) {
       instances.splice(actorIndex, 1);
     }
