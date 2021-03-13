@@ -1,7 +1,6 @@
 import { Game } from 'states';
 import { Vector } from 'components';
-
-import { AnyInstance } from './instances/types';
+import { Instance } from 'states/Game/components/instances';
 
 export interface ISelected<InstanceType> {
   pos: Vector;
@@ -10,7 +9,7 @@ export interface ISelected<InstanceType> {
 
 export class Selector {
   game: Game;
-  selected: ISelected<AnyInstance | null> = {
+  selected: ISelected<Instance | null> = {
     pos: new Vector(0, 0),
     instance: null,
   };
@@ -20,10 +19,9 @@ export class Selector {
   }
 
   select(pos: Vector): void {
-    const {
-      game: { instances },
-    } = this;
-    let instance: AnyInstance | null = null;
+    const { game } = this;
+    const instances = game.utils.instances.getAllInstances();
+    let instance: Instance | null = null;
 
     for (let i = 0; i < instances.length; i++) {
       const iterateInstance = instances[i];
@@ -47,7 +45,7 @@ export class Selector {
     return !!this.selected.instance;
   }
 
-  getSelected(): ISelected<AnyInstance | null> {
+  getSelected(): ISelected<Instance | null> {
     return this.selected;
   }
 }

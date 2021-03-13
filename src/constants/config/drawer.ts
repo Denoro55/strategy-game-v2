@@ -26,4 +26,7 @@ export const DRAWER_CONFIG = {
       enemyHover: '#f44336',
     },
   },
+  instance: {
+    healthbarHeight: 7
+  }
 };

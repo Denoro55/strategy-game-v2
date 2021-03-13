@@ -112,49 +112,48 @@ export class Drawer {
     const { neutrals } = this.game;
 
     neutrals.forEach((neutral) => {
+      this.drawHexon(neutral.pos.x, neutral.pos.y, {
+        color: '#8afcff',
+      });
       neutral.draw();
     });
   }
 
   drawHighlightedHexons(): void {
-    const { instances, player } = this.game;
+    const { actors, buildings, player } = this.game;
     const colors = this.config.field.colors;
 
-    instances.forEach((instance) => {
+    buildings.forEach((instance) => {
       // подсветка полей в зависимости от статуса хода
-      if (instance.type === 'building') {
-        const isVisible = isCellsInCells(
-          instance.posArray,
-          player.viewRange,
-          1
-        );
-        if (!isVisible) return;
+      const isVisible = isCellsInCells(instance.posArray, player.viewRange, 1);
+      if (!isVisible) return;
 
-        instance.posArray.forEach((subPos: Vector) => {
-          this.drawHexon(subPos.x, subPos.y, {
-            color: colors.building,
-          });
+      instance.posArray.forEach((subPos: Vector) => {
+        this.drawHexon(subPos.x, subPos.y, {
+          color: colors.building,
         });
-      } else {
-        let color = '';
-        if (instance.owner === 'enemy') {
-          return;
-        } else if (instance.owner === 'player') {
-          if (!instance.canTurn && !instance.canAttack) {
-            color = colors.cannotTurnAndAttack;
-          } else {
-            color =
-              !instance.canTurn || !instance.canAttack
-                ? colors.cannotTurn
-                : colors.canTurn;
-          }
+      });
+    });
+
+    actors.forEach((instance) => {
+      let color = '';
+      if (instance.owner === 'enemy') {
+        return;
+      } else if (instance.owner === 'player') {
+        if (!instance.canTurn && !instance.canAttack) {
+          color = colors.cannotTurnAndAttack;
+        } else {
+          color =
+            !instance.canTurn || !instance.canAttack
+              ? colors.cannotTurn
+              : colors.canTurn;
         }
-
-        this.drawHexon(instance.pos.x, instance.pos.y, {
-          color,
-          alpha: 0.5,
-        });
       }
+
+      this.drawHexon(instance.pos.x, instance.pos.y, {
+        color,
+        alpha: 0.5,
+      });
     });
   }
 
@@ -262,7 +261,8 @@ export class Drawer {
   }
 
   drawInstances(): void {
-    const { instances, player } = this.game;
+    const { player } = this.game;
+    const instances = this.game.utils.instances.getPlayerInstances();
 
     instances.forEach((instance) => {
       if (
@@ -272,7 +272,7 @@ export class Drawer {
         return;
       }
 
-      instance.draw(this.game);
+      instance.draw();
     });
   }
 

@@ -1,7 +1,7 @@
 import { Game } from 'states';
 import { Vector } from 'components';
-import spriteUrl from 'assets/images/buildings/main.png';
-import spriteEnemyUrl from 'assets/images/buildings/main-enemy.png';
+import spriteUrl from 'assets/images/instances/buildings/main.png';
+import spriteEnemyUrl from 'assets/images/instances/buildings/main-enemy.png';
 
 import { Building } from '../../instances';
 import { IInstanceType } from '../../instances/types';
@@ -12,6 +12,7 @@ export class MainBuilding extends Building {
   type: IInstanceType = 'building';
   name: BuildingNames = BuildingNames.main;
   image: HTMLImageElement;
+  posArray: Vector[] = [];
   viewRange = 4;
   maxHp = 100;
   hp = this.maxHp;
@@ -22,6 +23,7 @@ export class MainBuilding extends Building {
       player: spriteUrl,
       enemy: spriteEnemyUrl,
     });
+    this.setPosition();
   }
 
   setPosition(): void {
@@ -34,25 +36,5 @@ export class MainBuilding extends Building {
       new Vector(pos.x, pos.y + 1),
       new Vector(pos.x + dir, pos.y + 1),
     ];
-  }
-
-  draw(game: Game): void {
-    const { $ctx, utils } = game;
-    const { cellSize } = game.config.stage;
-    const config = this.getConfig();
-
-    const cellOffset: Vector = utils.draw.getCellOffset(config.size, cellSize);
-
-    const pos = utils.draw.getVector(
-      new Vector(
-        this.pos.x + 0.5 - cellOffset.x,
-        this.pos.y + 0.85 - cellOffset.y
-      ),
-      this.pos
-    );
-
-    $ctx.drawImage(this.image, pos.x, pos.y, config.size.x, config.size.y);
-
-    this.drawHealthbar();
   }
 }

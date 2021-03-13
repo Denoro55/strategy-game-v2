@@ -1,6 +1,6 @@
 import { Game } from 'states';
 import { Vector } from 'components';
-import spriteUrl from 'assets/images/neutral/crystals.png';
+import spriteUrl from 'assets/images/instances/neutral/crystals.png';
 
 import { Neutral } from '../../instances';
 import { IInstanceOptions } from '../../instances/types';

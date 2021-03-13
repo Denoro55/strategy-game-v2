@@ -1,4 +1,4 @@
-import { AnyInstance } from 'states/Game/components/instances/types';
+import { Instance } from 'states/Game/components/instances';
 import { Vector } from 'components';
 import {
   getEvenXOffset,
@@ -13,7 +13,7 @@ export const getValidatedCells = (
   pos: Vector,
   size: number,
   cells: Vector[],
-  blockers: AnyInstance[]
+  blockers: Instance[]
 ): Vector[] => {
   let validatedCells = [...cells];
 

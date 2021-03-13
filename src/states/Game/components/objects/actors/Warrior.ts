@@ -1,7 +1,7 @@
 import { Game } from 'states';
 import { Vector } from 'components';
-import spriteUrl from 'assets/images/actors/warrior.png';
-import spriteEnemyUrl from 'assets/images/actors/warrior-enemy.png';
+import spriteUrl from 'assets/images/instances/actors/warrior.png';
+import spriteEnemyUrl from 'assets/images/instances/actors/warrior-enemy.png';
 
 import { Actor } from '../../instances';
 import { IInstanceType } from '../../instances/types';

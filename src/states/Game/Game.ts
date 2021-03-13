@@ -1,3 +1,4 @@
+import { Building, Actor, Neutral } from 'states/Game/components/instances';
 import { App } from 'app';
 import {
   Drawer,
@@ -6,8 +7,6 @@ import {
   Player,
   EventListener,
   Lan,
-  Instance,
-  Neutral,
 } from './components';
 import { CONFIG } from 'constants/config';
 import { Vector } from 'components';
@@ -43,7 +42,8 @@ export class Game {
   mousePos: Vector = new Vector(0, 0); // нативная позиция мышки на канвасе (в px)
   stageCells: Vector; // количество видимых ячеек по x и y
 
-  instances: Instance[] = [];
+  actors: Actor[] = [];
+  buildings: Building[] = [];
   neutrals: Neutral[] = []
 
   isInitialized = false;

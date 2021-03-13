@@ -1,3 +1,4 @@
+import { Actor, Building } from 'states/Game/components/instances';
 import { Game } from 'states';
 import { Vector } from 'components';
 import { getRandomValue } from 'helpers';
@@ -45,34 +46,30 @@ export class InstanceUtils {
     pos: Vector,
     options: Pick<IInstanceOptions, 'owner'>
   ): void {
-    const { instances } = this.game;
+    const { actors, buildings, neutrals } = this.game;
 
-    instances.push(
-      new Instance(this.game, pos, {
-        ...options,
-        id: getRandomValue(),
-      })
-    );
-  }
+    const opts: IInstanceOptions = {
+      ...options,
+      id: getRandomValue(),
+    };
+    const args: [game: Game, pos: Vector, opts: IInstanceOptions] = [this.game, pos, opts];
 
-  addNeutral(
-    Neutral: IInstanceConstructor<Neutral>,
-    pos: Vector,
-    options: Pick<IInstanceOptions, 'owner'>
-  ): void {
-    const { neutrals } = this.game;
+    if (Instance.prototype instanceof Actor) {
+      actors.push(new Instance(...args) as Actor);
+    }
 
-    neutrals.push(
-      new Neutral(this.game, pos, {
-        ...options,
-        id: getRandomValue(),
-      })
-    );
+    if (Instance.prototype instanceof Building) {
+      buildings.push(new Instance(...args) as Building);
+    }
+
+    if (Instance.prototype instanceof Neutral) {
+      neutrals.push(new Instance(...args) as Neutral);
+    }
   }
 
   // pos (integer)
   findInstanceByPos = (pos: Vector): Instance | null => {
-    const { instances } = this.game;
+    const instances = this.getAllInstances();
 
     for (let i = 0; i < instances.length; i++) {
       const instance = instances[i];
@@ -88,20 +85,37 @@ export class InstanceUtils {
     return null;
   };
 
+  getAllInstances = (): Instance[] => {
+    const { actors, buildings, neutrals } = this.game;
+
+    return [...actors, ...buildings, ...neutrals];
+  };
+
+  getPlayerInstances = (): (Actor | Building)[] => {
+    const { actors, buildings } = this.game;
+
+    return [...actors, ...buildings];
+  };
+
   getInstanceById = (id: string): Instance | undefined => {
-    const { instances } = this.game;
+    const instances = this.getAllInstances();
 
     return instances.find((instance) => instance.options.id === id);
   };
 
   removeInstanceById(id: string): void {
-    const { instances } = this.game;
+    const { actors, buildings } = this.game;
 
-    const actorIndex = instances.findIndex(
-      (instance) => instance.options.id === id
-    );
-    if (actorIndex !== -1) {
-      instances.splice(actorIndex, 1);
-    }
+    const iter = (instances: Instance[]) => {
+      const index = instances.findIndex(
+        (instance) => instance.options.id === id
+      );
+      if (index !== -1) {
+        instances.splice(index, 1);
+      }
+    };
+
+    iter(actors);
+    iter(buildings);
   }
 }

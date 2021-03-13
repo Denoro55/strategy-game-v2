@@ -1,6 +1,7 @@
 import { Game } from 'states';
 import { App } from 'app';
 import { LanCore } from 'core';
+import { Actor, Building } from 'states/Game/components/instances';
 import { SocketActions, SocketListeners } from 'core/LanCore/enums';
 import { LanImitator } from '../LanImitator';
 import { IAttackEvent, IAttackResponse } from './types';
@@ -29,7 +30,8 @@ export class Lan extends LanCore {
     const { hp, id } = data;
 
     const instance = this.game.utils.instances.getInstanceById(id);
-    if (instance) {
+
+    if (instance && (instance instanceof Actor || instance instanceof Building)) {
       instance.update({
         hp,
       });

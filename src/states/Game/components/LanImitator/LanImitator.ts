@@ -1,6 +1,7 @@
 import { App } from 'app';
 import { LanCoreImitator } from 'core';
 import { Game } from 'states';
+import { Actor, Building } from 'states/Game/components/instances';
 import { ISocketAction } from 'core/LanCore/types';
 import { SocketActions } from 'core/LanCore/enums';
 import { IAttackResponse } from '../Lan/types';
@@ -28,10 +29,12 @@ export class LanImitator extends LanCoreImitator {
   attackInstance(event: ISocketAction): ISocketAction<IAttackResponse> {
     const { utils } = this.game;
     const { id, damage } = event.payload;
+    // TODO (d.chertenko): подумать, что можно сделать вместо 0
     let nextHp = 0;
 
     const instance = utils.instances.getInstanceById(id);
-    if (instance) {
+
+    if (instance && (instance instanceof Actor || instance instanceof Building)) {
       nextHp = instance.hp - damage;
     }
 
