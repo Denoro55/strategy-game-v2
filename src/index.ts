@@ -20,7 +20,7 @@ const SOCKET_HOST = ENV.SOCKET_HOST;
 
 const MOCK_CLIENT: IClient = {
   id: 1,
-  authKey: '123456789',
+  authKey: '1234567890',
   firstName: 'Denis',
   lastName: 'Chertenko',
 };
